@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blockchain &amp; Prediction Markets - 1 Week Curriculum</title>
+<style>
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --surface2: #1a2235;
+  --border: #2a3550;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #6366f1;
+  --accent2: #818cf8;
+  --green: #22c55e;
+  --green-dim: #166534;
+  --orange: #f59e0b;
+  --orange-dim: #78350f;
+  --red: #ef4444;
+  --cyan: #22d3ee;
+  --pink: #ec4899;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+}
+/* --- Sidebar --- */
+.sidebar {
+  position: fixed; top:0; left:0; width: 280px; height:100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100;
+  padding: 24px 0;
+  transition: transform 0.3s;
+}
+.sidebar.hidden { transform: translateX(-280px); }
+.sidebar-logo {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.sidebar-logo h2 { font-size: 16px; color: var(--accent2); letter-spacing: -0.3px; }
+.sidebar-logo span { font-size: 12px; color: var(--text-dim); }
+.nav-group { margin-bottom: 8px; }
+.nav-group-title {
+  padding: 8px 20px; font-size: 11px; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--text-dim); font-weight: 700;
+  cursor: pointer; display:flex; align-items:center; justify-content:space-between;
+  user-select:none;
+}
+.nav-group-title:hover { color: var(--text); }
+.nav-group-title .arrow { transition: transform 0.2s; font-size:10px; }
+.nav-group.collapsed .arrow { transform: rotate(-90deg); }
+.nav-group.collapsed .nav-items { display: none; }
+.nav-items a {
+  display: block; padding: 6px 20px 6px 28px;
+  color: var(--text-dim); text-decoration: none; font-size: 13px;
+  border-left: 2px solid transparent; transition: all 0.15s;
+}
+.nav-items a:hover { color: var(--text); background: var(--surface2); }
+.nav-items a.active {
+  color: var(--accent2); border-left-color: var(--accent);
+  background: rgba(99,102,241,0.08);
+}
+/* --- Main --- */
+.main { margin-left: 280px; min-height: 100vh; transition: margin-left 0.3s; }
+.main.full { margin-left: 0; }
+/* --- Top bar --- */
+.topbar {
+  position: sticky; top:0; z-index:50;
+  background: rgba(10,14,23,0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 40px; display:flex; align-items:center; justify-content:space-between;
+}
+.topbar-left { display:flex; align-items:center; gap:16px; }
+.menu-btn {
+  background:none; border:1px solid var(--border); color:var(--text);
+  padding:6px 10px; border-radius:6px; cursor:pointer; font-size:16px;
+}
+.menu-btn:hover { background:var(--surface2); }
+.progress-bar { flex:1; max-width:400px; }
+.progress-track {
+  height:6px; background:var(--surface2); border-radius:3px; overflow:hidden;
+}
+.progress-fill {
+  height:100%; background: linear-gradient(90deg, var(--accent), var(--cyan));
+  border-radius:3px; transition: width 0.5s;
+}
+.progress-label { font-size:12px; color:var(--text-dim); margin-top:4px; }
+/* --- Content --- */
+.content { max-width: 860px; margin: 0 auto; padding: 40px 40px 120px; }
+/* --- Day Section --- */
+.day-section { margin-bottom: 64px; display:none; }
+.day-section.active { display: block; }
+.day-header {
+  background: linear-gradient(135deg, var(--surface), var(--surface2));
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 32px; margin-bottom: 32px; position:relative; overflow:hidden;
+}
+.day-header::before {
+  content:''; position:absolute; top:-50%; right:-20%;
+  width:300px; height:300px; border-radius:50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.1), transparent 70%);
+}
+.day-badge {
+  display:inline-block; background:var(--accent); color:#fff;
+  padding: 4px 14px; border-radius: 20px; font-size:12px;
+  font-weight:700; letter-spacing:0.5px; margin-bottom:12px;
+}
+.day-header h1 { font-size:28px; letter-spacing:-0.5px; margin-bottom:8px; }
+.day-header p { color:var(--text-dim); font-size:15px; }
+/* --- Learning Goals --- */
+.goals-card {
+  background: var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:24px; margin-bottom:32px;
+}
+.goals-card h3 { font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--green); margin-bottom:16px; }
+.goals-card ul { list-style:none; }
+.goals-card li {
+  padding: 8px 0; padding-left: 28px; position:relative;
+  color: var(--text-dim); font-size: 14px;
+}
+.goals-card li::before {
+  content: ''; position:absolute; left:0; top:13px;
+  width:16px; height:16px; border-radius:50%;
+  border: 2px solid var(--green); background: var(--green-dim);
+}
+.goals-card li.done::before { background: var(--green); }
+/* --- Section --- */
+.section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 24px; overflow:hidden;
+}
+.section-header {
+  padding: 20px 24px; cursor:pointer; display:flex;
+  align-items:center; justify-content:space-between;
+  border-bottom: 1px solid transparent; transition: all 0.15s;
+  user-select: none;
+}
+.section-header:hover { background: var(--surface2); }
+.section-header h2 { font-size: 18px; letter-spacing: -0.3px; }
+.section-header .toggle { color:var(--text-dim); font-size:20px; transition:transform 0.2s; }
+.section.open .section-header { border-bottom-color: var(--border); }
+.section.open .toggle { transform: rotate(45deg); }
+.section-body { display:none; padding: 24px; }
+.section.open .section-body { display:block; }
+/* --- Typography inside sections --- */
+.section-body h3 {
+  font-size: 18px; margin: 28px 0 12px; color: var(--accent2);
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.section-body h3:first-child { margin-top:0; }
+.section-body h4 { font-size:15px; margin: 20px 0 8px; color: var(--cyan); }
+.section-body p { margin-bottom: 14px; color: var(--text-dim); }
+.section-body strong { color: var(--text); }
+.section-body ul, .section-body ol { margin: 0 0 16px 20px; color:var(--text-dim); }
+.section-body li { margin-bottom: 6px; }
+.section-body a { color: var(--accent2); text-decoration:none; border-bottom:1px solid transparent; }
+.section-body a:hover { border-bottom-color: var(--accent2); }
+/* --- Code --- */
+pre {
+  background: #0d1117; border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; overflow-x:auto;
+  margin: 14px 0; font-size: 13px; line-height: 1.6;
+}
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 13px;
+}
+p code, li code {
+  background: var(--surface2); padding: 2px 6px; border-radius: 4px;
+  font-size: 13px; color: var(--cyan);
+}
+/* syntax */
+.kw { color: #c678dd; }
+.fn { color: #61afef; }
+.st { color: #98c379; }
+.cm { color: #5c6370; font-style: italic; }
+.tp { color: #e5c07b; }
+.num { color: #d19a66; }
+.op { color: #56b6c2; }
+/* --- Tables --- */
+table {
+  width: 100%; border-collapse: collapse; margin: 16px 0;
+  font-size: 14px;
+}
+th {
+  background: var(--surface2); padding: 10px 14px; text-align:left;
+  font-size:12px; text-transform:uppercase; letter-spacing:0.8px;
+  color: var(--text-dim); border-bottom: 2px solid var(--border);
+}
+td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+}
+tr:hover td { background: rgba(99,102,241,0.04); }
+/* --- Callouts --- */
+.callout {
+  border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+  font-size: 14px; border-left: 4px solid;
+}
+.callout-info { background: rgba(99,102,241,0.08); border-color: var(--accent); }
+.callout-warn { background: rgba(245,158,11,0.08); border-color: var(--orange); }
+.callout-tip { background: rgba(34,197,94,0.08); border-color: var(--green); }
+.callout-title { font-weight:700; margin-bottom:6px; color:var(--text); font-size:13px; }
+/* --- Exercises --- */
+.exercise-card {
+  background: var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:24px; margin-bottom:24px;
+}
+.exercise-card h3 {
+  border:none; padding:0; margin: 0 0 16px;
+  color: var(--orange); font-size:16px;
+}
+.exercise-card ol { margin-left: 20px; }
+.exercise-card li { margin-bottom: 12px; color: var(--text-dim); }
+.exercise-card li strong { color: var(--text); }
+/* --- Diagram --- */
+.diagram {
+  background: #0d1117; border: 1px solid var(--border);
+  border-radius: 8px; padding: 20px; margin: 16px 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  line-height: 1.5; overflow-x: auto; white-space: pre; color: var(--text-dim);
+}
+/* --- Day nav --- */
+.day-nav {
+  display:flex; justify-content:space-between; margin-top:48px;
+  padding-top:24px; border-top:1px solid var(--border);
+}
+.day-nav button {
+  background: var(--surface); border:1px solid var(--border);
+  color:var(--text); padding:12px 24px; border-radius:8px;
+  cursor:pointer; font-size:14px; transition:all 0.15s;
+}
+.day-nav button:hover { background:var(--accent); border-color:var(--accent); }
+.day-nav button:disabled { opacity:0.3; cursor:default; }
+.day-nav button:disabled:hover { background:var(--surface); border-color:var(--border); }
+/* --- Landing --- */
+.landing { text-align:center; padding: 80px 20px; }
+.landing h1 { font-size:42px; letter-spacing:-1px; margin-bottom:12px; }
+.landing h1 span { background: linear-gradient(135deg, var(--accent2), var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.landing p { color:var(--text-dim); font-size:18px; max-width:600px; margin:0 auto 40px; }
+.day-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:16px; max-width:800px; margin:0 auto; }
+.day-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:24px; text-align:left; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden;
+}
+.day-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 8px 30px rgba(99,102,241,0.15); }
+.day-card .dc-num { font-size:36px; font-weight:800; color:var(--accent); opacity:0.3; position:absolute; top:12px; right:16px; }
+.day-card h3 { font-size:14px; margin-bottom:6px; }
+.day-card p { font-size:12px; color:var(--text-dim); margin:0; }
+.day-card .dc-tag {
+  display:inline-block; margin-top:12px; font-size:11px;
+  padding:3px 10px; border-radius:12px; background:var(--surface2); color:var(--text-dim);
+}
+/* --- Responsive --- */
+@media(max-width:900px){
+  .sidebar { transform:translateX(-280px); }
+  .sidebar.visible { transform:translateX(0); }
+  .main { margin-left:0 !important; }
+  .content { padding:24px 16px 80px; }
+  .day-header h1 { font-size:22px; }
+  .landing h1 { font-size:28px; }
+}
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--text-dim); }
+/* --- Checkbox --- */
+.check-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; cursor:pointer; }
+.check-item input[type=checkbox] {
+  appearance:none; width:18px; height:18px; min-width:18px; border:2px solid var(--border);
+  border-radius:4px; margin-top:3px; cursor:pointer; position:relative; background:var(--surface);
+}
+.check-item input[type=checkbox]:checked { background:var(--accent); border-color:var(--accent); }
+.check-item input[type=checkbox]:checked::after {
+  content:''; position:absolute; left:4px; top:1px; width:5px; height:9px;
+  border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);
+}
+.check-item label { color:var(--text-dim); font-size:14px; cursor:pointer; }
+.check-item input:checked + label { text-decoration:line-through; opacity:0.5; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <h2>Blockchain &amp; Prediction Markets</h2>
+    <span>1-Week Curriculum</span>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Overview <span class="arrow">&#9660;</span></div>
+    <div class="nav-items"><a href="#" onclick="showDay(0);return false;" class="active">Home</a></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Day 1 - Blockchain Basics <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(1);return false;">What is a Blockchain?</a>
+      <a href="#" onclick="showDay(1);return false;">Transactions</a>
+      <a href="#" onclick="showDay(1);return false;">Consensus Mechanisms</a>
+      <a href="#" onclick="showDay(1);return false;">Exercises</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Day 2 - Smart Contracts <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(2);return false;">What is a Smart Contract?</a>
+      <a href="#" onclick="showDay(2);return false;">The EVM</a>
+      <a href="#" onclick="showDay(2);return false;">Solidity Fundamentals</a>
+      <a href="#" onclick="showDay(2);return false;">Exercises</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Day 3 - Market Mechanics <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(3);return false;">Probability as Price</a>
+      <a href="#" onclick="showDay(3);return false;">Conditional Token Framework</a>
+      <a href="#" onclick="showDay(3);return false;">AMM Designs</a>
+      <a href="#" onclick="showDay(3);return false;">Exercises</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Day 4 - Oracles <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(4);return false;">The Oracle Problem</a>
+      <a href="#" onclick="showDay(4);return false;">UMA Optimistic Oracle</a>
+      <a href="#" onclick="showDay(4);return false;">Augur Reporting</a>
+      <a href="#" onclick="showDay(4);return false;">Exercises</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Day 5 - Building Contracts <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(5);return false;">Production Architecture</a>
+      <a href="#" onclick="showDay(5);return false;">Security Patterns</a>
+      <a href="#" onclick="showDay(5);return false;">Design Patterns</a>
+      <a href="#" onclick="showDay(5);return false;">Exercises</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Day 6 - Tokens &amp; DeFi <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(6);return false;">Oracle Integration</a>
+      <a href="#" onclick="showDay(6);return false;">Token Standards</a>
+      <a href="#" onclick="showDay(6);return false;">Layer 2 Scaling</a>
+      <a href="#" onclick="showDay(6);return false;">Exercises</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Day 7 - System Design <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(7);return false;">Full Architecture</a>
+      <a href="#" onclick="showDay(7);return false;">Frontend Integration</a>
+      <a href="#" onclick="showDay(7);return false;">V1 Roadmap</a>
+      <a href="#" onclick="showDay(7);return false;">Exercises</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleNavGroup(this)">Appendix <span class="arrow">&#9660;</span></div>
+    <div class="nav-items">
+      <a href="#" onclick="showDay(8);return false;">Glossary</a>
+      <a href="#" onclick="showDay(8);return false;">Essential Links</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main" id="main">
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" onclick="toggleSidebar()">&#9776;</button>
+      <span id="current-day-label" style="font-size:14px;color:var(--text-dim);">Overview</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label"><span id="progress-text">0 of 7 days completed</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+<!-- ==================== DAY 0: LANDING ==================== -->
+<div class="day-section active" id="day-0">
+  <div class="landing">
+    <h1>Blockchain &amp; <span>Prediction Markets</span></h1>
+    <p>A structured 1-week curriculum to take you from blockchain basics to building prediction markets on-chain. 3-5 hours per day.</p>
+    <div class="day-grid">
+      <div class="day-card" onclick="showDay(1)">
+        <div class="dc-num">1</div>
+        <h3>Blockchain Fundamentals</h3>
+        <p>Blocks, transactions, state, consensus (PoW, PoS, PoH)</p>
+        <span class="dc-tag">Foundation</span>
+      </div>
+      <div class="day-card" onclick="showDay(2)">
+        <div class="dc-num">2</div>
+        <h3>Smart Contracts</h3>
+        <p>EVM, Solidity basics, Ethereum vs Solana models</p>
+        <span class="dc-tag">Foundation</span>
+      </div>
+      <div class="day-card" onclick="showDay(3)">
+        <div class="dc-num">3</div>
+        <h3>Prediction Market Mechanics</h3>
+        <p>CTF, AMM designs (LMSR, CPMM, pm-AMM), Polymarket</p>
+        <span class="dc-tag">Core</span>
+      </div>
+      <div class="day-card" onclick="showDay(4)">
+        <div class="dc-num">4</div>
+        <h3>Oracles</h3>
+        <p>The Oracle Problem, UMA, Augur, Chainlink</p>
+        <span class="dc-tag">Core</span>
+      </div>
+      <div class="day-card" onclick="showDay(5)">
+        <div class="dc-num">5</div>
+        <h3>Building Contracts</h3>
+        <p>Production patterns, security, Factory/Proxy/Diamond</p>
+        <span class="dc-tag">Build</span>
+      </div>
+      <div class="day-card" onclick="showDay(6)">
+        <div class="dc-num">6</div>
+        <h3>Tokens &amp; DeFi</h3>
+        <p>ERC-20/1155, L2 scaling, oracle integration code</p>
+        <span class="dc-tag">Build</span>
+      </div>
+      <div class="day-card" onclick="showDay(7)">
+        <div class="dc-num">7</div>
+        <h3>System Design</h3>
+        <p>Full-stack architecture, frontend, V1 roadmap</p>
+        <span class="dc-tag">Ship</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DAY 1 ==================== -->
+<div class="day-section" id="day-1">
+  <div class="day-header">
+    <span class="day-badge">DAY 1</span>
+    <h1>Blockchain Fundamentals</h1>
+    <p>What problem does this solve? Understanding the core primitives.</p>
+  </div>
+
+  <div class="goals-card">
+    <h3>Learning Goals</h3>
+    <ul>
+      <li>Understand what a blockchain is and why it exists</li>
+      <li>Grasp the core primitives: blocks, transactions, state, consensus</li>
+      <li>Understand the UTXO vs Account model</li>
+      <li>Know the key differences between Bitcoin, Ethereum, and Solana</li>
+    </ul>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>1.1 What is a Blockchain?</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>A blockchain is a <strong>shared, append-only database</strong> replicated across thousands of computers. Data is grouped into <strong>blocks</strong> chained together cryptographically &mdash; each block contains a hash of the previous block, making it tamper-proof. If you alter any block, every subsequent block's hash breaks.</p>
+
+      <h4>Key Properties</h4>
+      <ul>
+        <li><strong>Immutability</strong> &mdash; once written, data can't be changed without network-wide consensus</li>
+        <li><strong>Transparency</strong> &mdash; every transaction is publicly auditable by anyone</li>
+        <li><strong>Decentralization</strong> &mdash; no single entity controls the ledger</li>
+        <li><strong>Censorship resistance</strong> &mdash; no one can selectively block transactions</li>
+      </ul>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Why This Matters for Prediction Markets</div>
+        Traditional betting platforms (Betfair, FanDuel) are centralized &mdash; they can freeze funds, change odds, or shut down. A blockchain-based prediction market uses smart contracts to hold funds in escrow and automatically pay winners. No intermediary can interfere.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>1.2 Transactions</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>Transactions are cryptographically signed instructions that change state on the blockchain. Think of them as database writes, but authenticated and permanent.</p>
+
+      <table>
+        <thead><tr><th>Property</th><th>Bitcoin</th><th>Ethereum</th><th>Solana</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Model</strong></td><td>UTXO (unspent transaction outputs)</td><td>Account-based</td><td>Account-based</td></tr>
+          <tr><td><strong>Confirmation time</strong></td><td>~10 minutes</td><td>~12 seconds</td><td>~400 milliseconds</td></tr>
+          <tr><td><strong>Content</strong></td><td>Value transfers only</td><td>Value transfers + smart contract calls</td><td>Bundles of multiple instructions</td></tr>
+        </tbody>
+      </table>
+
+      <h4>UTXO vs Account Model</h4>
+      <p><strong>Bitcoin (UTXO):</strong> Your "balance" is the sum of unspent outputs from previous transactions, like having a collection of bills in a wallet. To spend, you consume existing UTXOs and create new ones.</p>
+      <p><strong>Ethereum/Solana (Account):</strong> Like a bank account with a balance. Transactions directly increment/decrement account balances.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>1.3 Blocks and State</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p><strong>Blocks</strong> batch multiple transactions. Validators (or miners) compete or are selected to propose the next block.</p>
+
+      <p><strong>State</strong> is the current snapshot of all data on the chain:</p>
+      <ul>
+        <li><strong>Bitcoin:</strong> State = set of all unspent transaction outputs (UTXOs)</li>
+        <li><strong>Ethereum:</strong> State = a giant key-value store (Merkle Patricia trie) mapping every account to its balance and contract storage. The EVM's state transition: <code>Y(S, T) = S'</code> &mdash; applying transaction T to state S yields new state S'</li>
+        <li><strong>Solana:</strong> State = a collection of "accounts" (like files). Programs read/write to separate data accounts</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>1.4 Consensus: How Thousands of Computers Agree</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Bitcoin &mdash; Proof of Work (PoW)</h4>
+      <p>Miners compete to solve cryptographic puzzles (SHA-256 hashing). The winner proposes the next block and earns a reward. Energy-intensive by design &mdash; the cost of attacking the network must exceed the reward.</p>
+
+      <h4>Ethereum &mdash; Proof of Stake (PoS)</h4>
+      <p>Validators deposit 32 ETH as collateral. Every 12-second "slot," a random validator proposes a block. A committee of validators attests (votes) to its validity. Dishonest validators get "slashed" (lose their stake). Finality occurs when 2/3 of all staked ETH agrees.</p>
+
+      <h4>Solana &mdash; Proof of History (PoH) + PoS</h4>
+      <p>Solana's innovation: a cryptographic clock that timestamps and orders transactions <em>before</em> consensus. This pre-ordering enables parallel processing, achieving theoretical throughput of 65,000 TPS.</p>
+
+      <table>
+        <thead><tr><th>Dimension</th><th>Bitcoin</th><th>Ethereum</th><th>Solana</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Consensus</strong></td><td>Proof of Work</td><td>Proof of Stake</td><td>PoH + PoS</td></tr>
+          <tr><td><strong>TPS</strong></td><td>~7</td><td>~15-30 (L1)</td><td>~65,000 theoretical</td></tr>
+          <tr><td><strong>Block time</strong></td><td>~10 minutes</td><td>~12 seconds</td><td>~400ms</td></tr>
+          <tr><td><strong>Tx cost</strong></td><td>$1-20+</td><td>Variable gas fees</td><td>~$0.00025</td></tr>
+          <tr><td><strong>Smart contracts</strong></td><td>Very limited</td><td>Full (Solidity/Vyper)</td><td>Full (Rust)</td></tr>
+          <tr><td><strong>Finality</strong></td><td>~60 min (6 conf)</td><td>~13 min (2 epochs)</td><td>Sub-second</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Reading &amp; Resources</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li><a href="https://bitcoin.org/en/how-it-works" target="_blank">Bitcoin: How It Works</a></li>
+        <li><a href="https://ethereum.org/en/what-is-ethereum/" target="_blank">What is Ethereum?</a></li>
+        <li><a href="https://solana.com/docs" target="_blank">Solana Developer Docs &mdash; Core Concepts</a></li>
+        <li><a href="https://ethereum.org/en/developers/docs/intro-to-ethereum/" target="_blank">Ethereum: Intro to Ethereum (Dev Docs)</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <h3>Day 1 Exercises</h3>
+    <ol>
+      <li><strong>Trace a Bitcoin transaction</strong> on <a href="https://mempool.space" target="_blank">mempool.space</a> &mdash; find a transaction, identify its inputs (UTXOs consumed) and outputs (new UTXOs created).</li>
+      <li><strong>Trace an Ethereum transaction</strong> on <a href="https://etherscan.io" target="_blank">Etherscan</a> &mdash; find a smart contract interaction, read the "Input Data" field, and see which function was called.</li>
+      <li><strong>Compare block times:</strong> Visit block explorers for Bitcoin, Ethereum, and Solana. Note the latest block number and timestamp. How many blocks were produced in the last hour on each chain?</li>
+      <li><strong>Write a 1-paragraph summary</strong> answering: "Why can't a prediction market just use a regular database instead of a blockchain?"</li>
+    </ol>
+  </div>
+
+  <div class="day-nav">
+    <button disabled>&larr; Previous</button>
+    <button onclick="showDay(2)">Day 2: Smart Contracts &rarr;</button>
+  </div>
+</div>
+
+<!-- ==================== DAY 2 ==================== -->
+<div class="day-section" id="day-2">
+  <div class="day-header">
+    <span class="day-badge">DAY 2</span>
+    <h1>Smart Contracts &mdash; Programmable Money</h1>
+    <p>Understanding how code runs on a blockchain and why it matters.</p>
+  </div>
+
+  <div class="goals-card">
+    <h3>Learning Goals</h3>
+    <ul>
+      <li>Understand what smart contracts are and how they execute</li>
+      <li>Learn the EVM execution model (storage, memory, stack, gas)</li>
+      <li>Understand Solidity basics: types, functions, storage, events</li>
+      <li>See how Ethereum and Solana differ in their programming models</li>
+    </ul>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>2.1 What is a Smart Contract?</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>A smart contract is <strong>self-executing code deployed to a blockchain</strong>. Once deployed, it runs exactly as programmed &mdash; no one can alter it, shut it down, or override its logic. Think of it like a vending machine: insert the right inputs, and the predefined output is guaranteed.</p>
+
+      <div class="callout callout-info">
+        <div class="callout-title">For Prediction Markets, a Smart Contract Can:</div>
+        <ul style="margin-top:8px">
+          <li>Accept bets from users and hold funds in escrow</li>
+          <li>Receive the event outcome from an oracle</li>
+          <li>Automatically distribute winnings to correct bettors</li>
+          <li>All without any human intermediary</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>2.2 The Ethereum Virtual Machine (EVM)</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>The EVM is a Turing-complete stack machine (1024 items deep, 256-bit words) that executes smart contract bytecode. Every node runs the same computation, guaranteeing identical results.</p>
+
+      <table>
+        <thead><tr><th>Memory Area</th><th>Persistence</th><th>Cost</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Storage</strong></td><td>Permanent (on-chain)</td><td>Very expensive (~20,000 gas to write)</td><td>User balances, market state</td></tr>
+          <tr><td><strong>Memory</strong></td><td>Temporary (per call)</td><td>Moderate</td><td>Intermediate calculations</td></tr>
+          <tr><td><strong>Stack</strong></td><td>Temporary (per opcode)</td><td>Cheap</td><td>Function arguments, local vars</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Gas:</strong> Every operation costs gas (a unit of computation). Users pay gas fees (in ETH) to execute transactions. This prevents infinite loops and spam.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>2.3 Solidity Fundamentals</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>Solidity is the primary language for Ethereum smart contracts. Here's a minimal prediction market demonstrating the key concepts:</p>
+
+<pre><code><span class="cm">// SPDX-License-Identifier: MIT</span>
+<span class="kw">pragma solidity</span> ^0.8.20;
+
+<span class="kw">contract</span> <span class="tp">SimplePrediction</span> {
+    <span class="cm">// --- State Variables (stored on-chain permanently) ---</span>
+    <span class="tp">address</span> <span class="kw">public</span> admin;
+    <span class="tp">uint256</span> <span class="kw">public</span> totalPool;
+    <span class="kw">mapping</span>(<span class="tp">address</span> =&gt; <span class="tp">uint256</span>) <span class="kw">public</span> yesBets;
+    <span class="kw">mapping</span>(<span class="tp">address</span> =&gt; <span class="tp">uint256</span>) <span class="kw">public</span> noBets;
+    <span class="tp">bool</span> <span class="kw">public</span> resolved;
+    <span class="tp">bool</span> <span class="kw">public</span> outcome;
+
+    <span class="cm">// --- Events (emitted for off-chain indexing) ---</span>
+    <span class="kw">event</span> <span class="fn">BetPlaced</span>(<span class="tp">address</span> <span class="kw">indexed</span> user, <span class="tp">bool</span> isYes, <span class="tp">uint256</span> amount);
+    <span class="kw">event</span> <span class="fn">MarketResolved</span>(<span class="tp">bool</span> outcome);
+
+    <span class="cm">// --- Modifiers (reusable precondition checks) ---</span>
+    <span class="kw">modifier</span> <span class="fn">onlyAdmin</span>() {
+        <span class="kw">require</span>(msg.sender == admin, <span class="st">"Not admin"</span>);
+        _;
+    }
+    <span class="kw">modifier</span> <span class="fn">marketOpen</span>() {
+        <span class="kw">require</span>(!resolved, <span class="st">"Market resolved"</span>);
+        _;
+    }
+
+    <span class="cm">// --- Constructor (runs once at deployment) ---</span>
+    <span class="kw">constructor</span>() { admin = msg.sender; }
+
+    <span class="cm">// --- Functions ---</span>
+    <span class="kw">function</span> <span class="fn">betYes</span>() <span class="kw">external payable</span> marketOpen {
+        <span class="kw">require</span>(msg.value &gt; <span class="num">0</span>, <span class="st">"Must send ETH"</span>);
+        yesBets[msg.sender] += msg.value;
+        totalPool += msg.value;
+        <span class="kw">emit</span> <span class="fn">BetPlaced</span>(msg.sender, <span class="kw">true</span>, msg.value);
+    }
+
+    <span class="kw">function</span> <span class="fn">betNo</span>() <span class="kw">external payable</span> marketOpen {
+        <span class="kw">require</span>(msg.value &gt; <span class="num">0</span>, <span class="st">"Must send ETH"</span>);
+        noBets[msg.sender] += msg.value;
+        totalPool += msg.value;
+        <span class="kw">emit</span> <span class="fn">BetPlaced</span>(msg.sender, <span class="kw">false</span>, msg.value);
+    }
+
+    <span class="kw">function</span> <span class="fn">resolve</span>(<span class="tp">bool</span> _outcome) <span class="kw">external</span> onlyAdmin marketOpen {
+        resolved = <span class="kw">true</span>;
+        outcome = _outcome;
+        <span class="kw">emit</span> <span class="fn">MarketResolved</span>(_outcome);
+    }
+}</code></pre>
+
+      <h4>Key Concepts Demonstrated</h4>
+      <ul>
+        <li><code>mapping</code> &mdash; hash table for key-value storage</li>
+        <li><code>msg.sender</code> &mdash; address of the caller</li>
+        <li><code>msg.value</code> &mdash; ETH sent with the transaction</li>
+        <li><code>payable</code> &mdash; function can receive ETH</li>
+        <li><code>external</code> / <code>public</code> &mdash; visibility modifiers</li>
+        <li>Events &mdash; logged for frontend/indexer consumption</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>2.4 Ethereum vs Solana Programming Model</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead><tr><th>Aspect</th><th>Ethereum (Solidity)</th><th>Solana (Rust)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Code + State</strong></td><td>Co-located in the same contract</td><td>Separated: programs are stateless; data in separate accounts</td></tr>
+          <tr><td><strong>Upgradeability</strong></td><td>Immutable by default (proxy patterns)</td><td>Upgradeable by default</td></tr>
+          <tr><td><strong>Composability</strong></td><td>Contracts call contracts via ABI</td><td>Cross-Program Invocation (CPI)</td></tr>
+          <tr><td><strong>Escrow</strong></td><td>Contract address holds funds</td><td>Program Derived Addresses (PDAs)</td></tr>
+          <tr><td><strong>Token standard</strong></td><td>ERC-20, ERC-721, ERC-1155</td><td>SPL Token program</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Key Insight for Prediction Markets</div>
+        Solana's separation of code and state means one deployed program can manage thousands of markets through separate data accounts. On Ethereum, you typically deploy a new contract per market (Factory pattern) or use complex proxy architectures.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Reading &amp; Resources</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li><a href="https://ethereum.org/en/developers/docs/smart-contracts/" target="_blank">Ethereum: Smart Contracts</a></li>
+        <li><a href="https://docs.soliditylang.org/en/latest/" target="_blank">Solidity Documentation</a></li>
+        <li><a href="https://solana.com/docs/core/programs" target="_blank">Solana: Programs Overview</a></li>
+        <li><a href="https://docs.openzeppelin.com/" target="_blank">OpenZeppelin Contracts</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <h3>Day 2 Exercises</h3>
+    <ol>
+      <li><strong>Read a deployed contract:</strong> On Etherscan, find a verified contract. Identify: state variables, events, modifiers, and the main functions.</li>
+      <li><strong>Identify the state machine:</strong> In the SimplePrediction example above, draw the state transitions: what states can the market be in? What prevents invalid transitions?</li>
+      <li><strong>Gas estimation:</strong> Using <a href="https://remix.ethereum.org" target="_blank">Remix IDE</a>, deploy the SimplePrediction contract. Call <code>betYes()</code> with some test ETH. Note the gas used.</li>
+      <li><strong>Compare models:</strong> Write a paragraph explaining why Solana separating code from state might be advantageous for prediction markets.</li>
+    </ol>
+  </div>
+
+  <div class="day-nav">
+    <button onclick="showDay(1)">&larr; Day 1: Blockchain Fundamentals</button>
+    <button onclick="showDay(3)">Day 3: Market Mechanics &rarr;</button>
+  </div>
+</div>
+
+<!-- ==================== DAY 3 ==================== -->
+<div class="day-section" id="day-3">
+  <div class="day-header">
+    <span class="day-badge">DAY 3</span>
+    <h1>Prediction Market Mechanics</h1>
+    <p>How markets actually work: tokens, pricing, and platform architectures.</p>
+  </div>
+
+  <div class="goals-card">
+    <h3>Learning Goals</h3>
+    <ul>
+      <li>Understand how prediction markets work as probability discovery mechanisms</li>
+      <li>Learn the Conditional Token Framework (CTF) &mdash; the industry standard</li>
+      <li>Understand different AMM designs for prediction markets</li>
+      <li>See how Polymarket and Augur are architected</li>
+    </ul>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>3.1 Prediction Markets as Probability Machines</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>A prediction market converts collective belief into prices. For a binary question ("Will X happen?"):</p>
+      <ul>
+        <li><strong>YES token price = $0.70</strong> means the market estimates a 70% probability</li>
+        <li><strong>NO token price = $0.30</strong> means 30% probability</li>
+        <li>YES + NO always equals $1.00 (fully collateralized)</li>
+      </ul>
+      <p>After the event resolves: winning tokens redeem for $1.00, losing tokens become worthless.</p>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">The Magic</div>
+        Traders with better information buy underpriced outcomes, pushing prices toward the true probability. This is why prediction markets consistently outperform polls and pundits.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>3.2 The Conditional Token Framework (CTF)</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>The <strong>Gnosis CTF</strong> is the industry standard, used by Polymarket ($18B+ volume). It uses the <strong>ERC-1155 multi-token standard</strong>.</p>
+
+      <h4>Three Core Operations</h4>
+      <div class="diagram">SPLIT:  $1.00 USDC  &rarr;  1 YES token + 1 NO token
+MERGE:  1 YES token + 1 NO token  &rarr;  $1.00 USDC
+REDEEM: 1 Winning token  &rarr;  $1.00 USDC (after resolution)</div>
+
+      <h4>How It Works Under the Hood</h4>
+      <ol>
+        <li><strong>Prepare a Condition:</strong> <code>prepareCondition(oracle, questionId, outcomeSlotCount)</code> &mdash; registers a new question on-chain.</li>
+        <li><strong>Split Position (Minting):</strong> <code>splitPosition(collateral, parentCollectionId, conditionId, partition, amount)</code> &mdash; locks USDC and mints outcome tokens.</li>
+        <li><strong>Report Payouts (Resolution):</strong> <code>reportPayouts(questionId, payouts)</code> &mdash; oracle calls with payout vector (e.g., <code>[1, 0]</code> for Yes wins).</li>
+        <li><strong>Redeem Positions:</strong> <code>redeemPositions(...)</code> &mdash; winners burn tokens and receive collateral.</li>
+      </ol>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Why ERC-1155?</div>
+        Unlike ERC-20 (one contract per token), ERC-1155 allows a single contract to manage unlimited token types. Critical when a platform creates thousands of markets, each needing its own YES/NO tokens.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>3.3 AMM Designs for Prediction Markets</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>1. Central Limit Order Book (CLOB) &mdash; Polymarket</h4>
+      <div class="diagram">Buy orders:  $0.68, $0.67, $0.65, ...
+Sell orders: $0.72, $0.73, $0.75, ...
+                    &darr;
+           Spread: $0.04</div>
+      <p>Orders matched when bid &ge; ask. Polymarket matches off-chain (speed), settles on-chain (trust). Best for high-volume markets.</p>
+
+      <h4>2. Logarithmic Market Scoring Rule (LMSR)</h4>
+      <p>Invented by Robin Hanson. The market maker itself provides liquidity (no pool needed). Price adjusts logarithmically. A <strong>liquidity parameter (b)</strong> controls sensitivity. Maximum loss is bounded and known in advance. Great for bootstrapping new markets.</p>
+
+      <h4>3. Constant Product Market Maker (CPMM)</h4>
+      <p>Uniswap-style: <code>x * y = k</code>. Requires a liquidity pool. Problem for prediction markets: <strong>severe impermanent loss</strong> as tokens converge to $0 or $1 at resolution.</p>
+
+      <h4>4. pm-AMM &mdash; State of the Art (Paradigm, Nov 2024)</h4>
+      <p>Uses a Gaussian distribution to concentrate liquidity around 50% probability. Dynamic variant reduces liquidity as expiration approaches. Achieves uniform loss rates regardless of current price.</p>
+
+      <table>
+        <thead><tr><th>Feature</th><th>CLOB</th><th>LMSR</th><th>CPMM</th><th>pm-AMM</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Liquidity pool?</strong></td><td>No</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td><strong>Low-liquidity</strong></td><td>Poor</td><td>Good</td><td>Poor</td><td>Good</td></tr>
+          <tr><td><strong>Impermanent loss</strong></td><td>N/A</td><td>Bounded</td><td>Severe</td><td>Uniform</td></tr>
+          <tr><td><strong>Best for</strong></td><td>High-volume</td><td>Bootstrapping</td><td>Established</td><td>All markets</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>3.4 Real Platform Architectures</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Polymarket (Polygon / Ethereum L2)</h4>
+      <div class="diagram">User deposits USDC
+        &darr;
+USDC bridged to Polygon
+        &darr;
+CTF splits USDC into YES/NO tokens (ERC-1155)
+        &darr;
+Off-chain CLOB matches orders
+        &darr;
+On-chain CTFExchange.sol settles trades
+        &darr;
+UMA Optimistic Oracle resolves outcome
+        &darr;
+Winners redeem tokens for USDC</div>
+
+      <h4>Augur (Ethereum)</h4>
+      <ul>
+        <li>Fully decentralized: on-chain order book (v1), P2P orders (v2), Balancer AMM (Turbo)</li>
+        <li>REP token for governance and oracle duties</li>
+        <li>Anyone can create a market</li>
+        <li>Four-stage lifecycle: Creation &rarr; Trading &rarr; Reporting &rarr; Settlement</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Reading &amp; Resources</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li><a href="https://docs.polymarket.com/" target="_blank">Polymarket Docs: CTF Overview</a></li>
+        <li><a href="https://docs.gnosis.io/conditionaltokens/" target="_blank">Gnosis Conditional Token Framework</a></li>
+        <li><a href="https://www.paradigm.xyz/2024/11/pm-amm" target="_blank">pm-AMM Paper (Paradigm)</a></li>
+        <li><a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-1155/" target="_blank">ERC-1155 Standard</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <h3>Day 3 Exercises</h3>
+    <ol>
+      <li><strong>Manual CTF walkthrough:</strong> Alice splits 100 USDC into 100 YES + 100 NO tokens. She sells 100 NO to Bob at $0.40 each. The event resolves YES. Calculate each person's profit/loss.</li>
+      <li><strong>LMSR pricing:</strong> If b=100, and 50 YES shares and 0 NO shares have been purchased, use <code>C = b * ln(e^(q_yes/b) + e^(q_no/b))</code> to calculate the YES share price.</li>
+      <li><strong>Explore Polymarket:</strong> Visit polymarket.com. Pick a market. Note the YES price, volume, resolution source, and expiration. How does the price relate to implied probability?</li>
+      <li><strong>Architecture diagram:</strong> Draw a system diagram for a market using: factory contract, CTF, LMSR, and oracle. Label contracts and data flows.</li>
+    </ol>
+  </div>
+
+  <div class="day-nav">
+    <button onclick="showDay(2)">&larr; Day 2: Smart Contracts</button>
+    <button onclick="showDay(4)">Day 4: Oracles &rarr;</button>
+  </div>
+</div>
+
+<!-- ==================== DAY 4 ==================== -->
+<div class="day-section" id="day-4">
+  <div class="day-header">
+    <span class="day-badge">DAY 4</span>
+    <h1>Oracles &mdash; Connecting Real World to Blockchain</h1>
+    <p>How real-world outcomes get on-chain: the hardest problem in prediction markets.</p>
+  </div>
+
+  <div class="goals-card">
+    <h3>Learning Goals</h3>
+    <ul>
+      <li>Understand the Oracle Problem &mdash; why blockchains can't access external data</li>
+      <li>Learn oracle design patterns (centralized, decentralized, optimistic)</li>
+      <li>Deep dive into UMA's Optimistic Oracle (used by Polymarket)</li>
+      <li>Understand Augur's communal reporting and fork mechanism</li>
+    </ul>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>4.1 The Oracle Problem</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>Smart contracts are <strong>deterministic</strong> &mdash; every node must execute the same code and reach the same result. If a contract could directly query an API ("Did Team A win?"), different nodes might get different responses, breaking consensus.</p>
+      <p><strong>Oracles</strong> are the bridge: off-chain services that feed verified real-world data on-chain through transactions.</p>
+
+      <h4>Three Dimensions of the Oracle Problem</h4>
+      <ol>
+        <li><strong>Correctness</strong> &mdash; Is the data authentic and unaltered?</li>
+        <li><strong>Availability</strong> &mdash; Will the data always be accessible?</li>
+        <li><strong>Incentive Compatibility</strong> &mdash; Are providers economically motivated to be honest?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>4.2 Oracle Design Patterns</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Centralized Oracle</h4>
+      <p>A single trusted entity submits data. Simple and fast, but a single point of failure. Not suitable for production prediction markets.</p>
+
+      <h4>Decentralized Oracle Network (Chainlink-style)</h4>
+      <p>Multiple independent node operators fetch data from multiple sources. Aggregated via median/mean. Staking mechanisms penalize dishonest nodes. Best for continuous data feeds.</p>
+
+      <h4>Optimistic Oracle (UMA-style)</h4>
+      <p>Assumes data is correct unless challenged. A proposer posts a bond + their answer. If undisputed &rarr; accepted. If disputed &rarr; escalates to a vote. Best for event-based resolution.</p>
+
+      <h4>Schelling Point Oracle (Augur-style)</h4>
+      <p>Token holders independently report outcomes. Incentives align around the truthful "focal point." Dispute escalation increases required stake exponentially. Nuclear option: protocol forks.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>4.3 UMA Optimistic Oracle &mdash; Deep Dive</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>This is the oracle Polymarket uses. Here's the full resolution flow:</p>
+      <div class="diagram">Step 1: Market ends
+          &darr;
+Step 2: Anyone proposes an outcome + posts bond (~$750 USDC)
+          &darr;
+Step 3: 2-hour challenge period begins
+          &darr;
+     +--- No dispute ----------------------+
+     |                                      &darr;
+     |                      Proposal accepted as truth
+     |                                      &darr;
+     |                      Oracle resolves the CTF condition
+     |                                      &darr;
+     |                      Winners redeem tokens
+     |
+     +--- Dispute raised (bond posted) ----+
+                                            &darr;
+                             Market resets, new UMA request
+                                            &darr;
+                             UMA token holders vote
+                                            &darr;
+                             Loser forfeits bond
+                                            &darr;
+                             Correct outcome finalized</div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Why "Optimistic"?</div>
+        The common case (uncontested outcomes) resolves in ~2 hours with minimal cost. The expensive dispute mechanism only activates when needed. This makes the 99% case fast and cheap.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>4.4 Augur's Communal Reporting &mdash; Deep Dive</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ol>
+        <li><strong>Initial Report:</strong> Market creator reports the outcome &rarr; becomes "Tentative Winning Outcome"</li>
+        <li><strong>Dispute Round 1:</strong> Anyone disputes by staking REP on an alternative. Required stake: base amount.</li>
+        <li><strong>Dispute Round 2:</strong> Required stake <strong>doubles</strong>.</li>
+        <li><strong>Dispute Round N:</strong> Keeps doubling (exponential escalation).</li>
+        <li><strong>No dispute?</strong> Tentative outcome becomes final.</li>
+        <li><strong>Nuclear Option (Fork):</strong> Protocol forks into parallel "universes" &mdash; one per outcome. REP holders choose. Universe with most REP becomes canonical.</li>
+      </ol>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">Manipulation Resistance</div>
+        To overturn a legitimate outcome, an attacker must stake more REP than all honest participants combined &mdash; and if they trigger a fork, they must acquire majority REP in the winning universe. Cost grows exponentially.
+      </div>
+
+      <table>
+        <thead><tr><th>Feature</th><th>UMA Optimistic</th><th>Chainlink</th><th>Augur Communal</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Speed</strong></td><td>~2 hours</td><td>Real-time feeds</td><td>Days to weeks</td></tr>
+          <tr><td><strong>Dispute</strong></td><td>Bond + vote</td><td>N/A (automated)</td><td>Escalating stake + fork</td></tr>
+          <tr><td><strong>Decentralization</strong></td><td>Moderate</td><td>Moderate-High</td><td>Maximum</td></tr>
+          <tr><td><strong>Best for</strong></td><td>Binary events</td><td>Price/score feeds</td><td>High-stakes markets</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Reading &amp; Resources</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li><a href="https://ethereum.org/en/developers/docs/oracles/" target="_blank">Ethereum Docs: Oracles</a></li>
+        <li><a href="https://docs.uma.xyz/" target="_blank">UMA Optimistic Oracle Documentation</a></li>
+        <li><a href="https://docs.augur.net/" target="_blank">Augur Documentation</a></li>
+        <li><a href="https://docs.chain.link/" target="_blank">Chainlink Documentation</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <h3>Day 4 Exercises</h3>
+    <ol>
+      <li><strong>Oracle attack scenario:</strong> Design a hypothetical attack on a market using a single API endpoint as oracle. How would UMA's optimistic design prevent it?</li>
+      <li><strong>Game theory analysis:</strong> In Augur's dispute system, if the base stake is 100 REP, how much total REP must an attacker stake to win 10 consecutive dispute rounds?</li>
+      <li><strong>UMA walkthrough:</strong> Read the <a href="https://github.com/Polymarket/uma-ctf-adapter" target="_blank">UMA CTF Adapter</a> on GitHub. Identify how questions are initialized, proposals submitted, disputes handled.</li>
+      <li><strong>Design your oracle:</strong> Write a 1-page design doc for a sports prediction market oracle. Cover: data sources, dispute mechanism, timeline, attack resistance.</li>
+    </ol>
+  </div>
+
+  <div class="day-nav">
+    <button onclick="showDay(3)">&larr; Day 3: Market Mechanics</button>
+    <button onclick="showDay(5)">Day 5: Building Contracts &rarr;</button>
+  </div>
+</div>
+
+<!-- ==================== DAY 5 ==================== -->
+<div class="day-section" id="day-5">
+  <div class="day-header">
+    <span class="day-badge">DAY 5</span>
+    <h1>Smart Contract Development</h1>
+    <p>Building a production-grade prediction market: patterns, security, testing.</p>
+  </div>
+
+  <div class="goals-card">
+    <h3>Learning Goals</h3>
+    <ul>
+      <li>Learn production-grade smart contract patterns for prediction markets</li>
+      <li>Understand security best practices (reentrancy, CEI, access control)</li>
+      <li>Learn Factory, Proxy, and Diamond design patterns</li>
+      <li>Set up a development environment with Foundry</li>
+    </ul>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>5.1 Production Market Contract</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+<pre><code><span class="kw">contract</span> <span class="tp">PredictionMarket</span> <span class="kw">is</span> <span class="tp">ReentrancyGuard</span> {
+    <span class="kw">enum</span> <span class="tp">State</span>  { Active, Resolved, Cancelled }
+    <span class="kw">enum</span> <span class="tp">Outcome</span> { Undecided, Yes, No }
+
+    <span class="cm">// --- Config (frozen at creation) ---</span>
+    <span class="tp">string</span>  <span class="kw">public</span> question;
+    <span class="tp">uint256</span> <span class="kw">public</span> resolutionTime;
+    <span class="tp">address</span> <span class="kw">public</span> oracle;
+    <span class="tp">IERC20</span>  <span class="kw">public</span> collateral;
+
+    <span class="cm">// --- Market State ---</span>
+    <span class="tp">State</span>   <span class="kw">public</span> state;
+    <span class="tp">Outcome</span> <span class="kw">public</span> winningOutcome;
+    <span class="tp">uint256</span> <span class="kw">public</span> yesPool;
+    <span class="tp">uint256</span> <span class="kw">public</span> noPool;
+
+    <span class="cm">// --- User Positions ---</span>
+    <span class="kw">mapping</span>(<span class="tp">address</span> =&gt; <span class="tp">uint256</span>) <span class="kw">public</span> yesBets;
+    <span class="kw">mapping</span>(<span class="tp">address</span> =&gt; <span class="tp">uint256</span>) <span class="kw">public</span> noBets;
+    <span class="kw">mapping</span>(<span class="tp">address</span> =&gt; <span class="tp">bool</span>)    <span class="kw">public</span> claimed;
+
+    <span class="kw">function</span> <span class="fn">placeBet</span>(<span class="tp">bool</span> isYes, <span class="tp">uint256</span> amount)
+        <span class="kw">external</span> <span class="fn">nonReentrant</span>
+    {
+        <span class="kw">require</span>(state == State.Active);
+        <span class="kw">require</span>(block.timestamp &lt; resolutionTime);
+        collateral.<span class="fn">transferFrom</span>(msg.sender, <span class="kw">address</span>(<span class="kw">this</span>), amount);
+        <span class="kw">if</span> (isYes) { yesBets[msg.sender] += amount; yesPool += amount; }
+        <span class="kw">else</span>       { noBets[msg.sender] += amount; noPool += amount; }
+    }
+
+    <span class="kw">function</span> <span class="fn">claimWinnings</span>() <span class="kw">external</span> <span class="fn">nonReentrant</span> {
+        <span class="kw">require</span>(state == State.Resolved);
+        <span class="kw">require</span>(!claimed[msg.sender]);
+
+        <span class="tp">uint256</span> userBet = winningOutcome == Outcome.Yes
+            ? yesBets[msg.sender] : noBets[msg.sender];
+        <span class="tp">uint256</span> winPool = winningOutcome == Outcome.Yes
+            ? yesPool : noPool;
+        <span class="kw">require</span>(userBet &gt; <span class="num">0</span>);
+
+        <span class="cm">// CEI: Effect before Interaction</span>
+        claimed[msg.sender] = <span class="kw">true</span>;
+
+        <span class="tp">uint256</span> payout = (userBet * (yesPool + noPool)) / winPool;
+        collateral.<span class="fn">transfer</span>(msg.sender, payout);
+    }
+}</code></pre>
+
+      <h4>Payout Formula</h4>
+      <p><code>payout = userBet * (totalPool / winningPool)</code></p>
+      <p>Example: YES pool = 100, NO pool = 400. YES wins. A 100 USDC YES bet gets: <code>100 * (500/100) = 500 USDC</code> (5x return).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>5.2 Security Patterns</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Checks-Effects-Interactions (CEI) &mdash; The #1 Rule</h4>
+<pre><code><span class="cm">// 1. CHECKS    &rarr; Validate all preconditions (require/revert)</span>
+<span class="cm">// 2. EFFECTS   &rarr; Update all internal state BEFORE external calls</span>
+<span class="cm">// 3. INTERACTIONS &rarr; Make external calls LAST (transfers, etc.)</span></code></pre>
+      <p>This prevents reentrancy: even if the external call re-enters your contract, the state has already been updated.</p>
+
+      <h4>Reentrancy Guard</h4>
+      <p>Always use both CEI pattern AND OpenZeppelin's <code>ReentrancyGuard</code> (<code>nonReentrant</code> modifier) for functions that transfer funds.</p>
+
+      <h4>Config Snapshot Pattern</h4>
+      <p>Freeze fees and oracle addresses at market creation time. Prevents an admin from changing fees after users commit capital.</p>
+
+      <table>
+        <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>Admin rug-pull (changing fees)</td><td>Snapshot config at creation time</td></tr>
+          <tr><td>Double-claiming winnings</td><td>Boolean <code>claimed</code> flag set before transfer</td></tr>
+          <tr><td>Betting on resolved markets</td><td>State validation in <code>placeBet()</code></td></tr>
+          <tr><td>One-sided markets</td><td>Require both pools &gt; 0, else cancel</td></tr>
+          <tr><td>Reentrancy</td><td>CEI pattern + <code>nonReentrant</code> modifier</td></tr>
+          <tr><td>Integer overflow</td><td>Solidity 0.8+ (built-in protection)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>5.3 Design Patterns</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Factory Pattern</h4>
+      <p>One factory deploys many market instances. Each market is isolated with its own funds and state.</p>
+<pre><code><span class="kw">contract</span> <span class="tp">PredictionMarketFactory</span> {
+    <span class="tp">address</span>[] <span class="kw">public</span> markets;
+
+    <span class="kw">function</span> <span class="fn">createMarket</span>(<span class="tp">string</span> <span class="kw">calldata</span> question, <span class="tp">address</span> oracle)
+        <span class="kw">external returns</span> (<span class="tp">address</span>)
+    {
+        <span class="tp">PredictionMarket</span> market = <span class="kw">new</span> <span class="tp">PredictionMarket</span>(question, oracle);
+        markets.<span class="fn">push</span>(<span class="kw">address</span>(market));
+        <span class="kw">return</span> <span class="kw">address</span>(market);
+    }
+}</code></pre>
+
+      <h4>Proxy Pattern (Upgradeability)</h4>
+      <p>Separates storage (proxy) from logic (implementation). Upgrade logic without losing state.</p>
+      <ul>
+        <li><strong>UUPS Proxy</strong> &mdash; upgrade logic in the implementation (cheaper)</li>
+        <li><strong>Transparent Proxy</strong> &mdash; admin/user calls routed differently</li>
+        <li><strong>Beacon Proxy</strong> &mdash; all factory-deployed markets share one beacon (upgrade all at once)</li>
+      </ul>
+
+      <h4>Diamond Pattern (EIP-2535)</h4>
+      <p>For complex platforms exceeding the 24KB size limit. A single proxy delegates to multiple "facets" based on function selectors. Ideal for large prediction market platforms.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>5.4 Development Setup &amp; Testing</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Foundry (Recommended)</h4>
+<pre><code><span class="cm"># Install Foundry</span>
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+
+<span class="cm"># Create a new project</span>
+forge init prediction-market
+<span class="kw">cd</span> prediction-market
+
+<span class="cm"># Key commands</span>
+forge build              <span class="cm"># Compile contracts</span>
+forge test               <span class="cm"># Run tests</span>
+forge test -vvvv         <span class="cm"># Full trace</span>
+forge test --gas-report  <span class="cm"># Gas profiling</span>
+anvil                    <span class="cm"># Local Ethereum node</span></code></pre>
+
+      <h4>Example Foundry Test</h4>
+<pre><code><span class="kw">function</span> <span class="fn">test_PlaceBetAndClaim</span>() <span class="kw">public</span> {
+    <span class="tp">address</span> alice = <span class="fn">makeAddr</span>(<span class="st">"alice"</span>);
+    <span class="tp">address</span> bob   = <span class="fn">makeAddr</span>(<span class="st">"bob"</span>);
+
+    usdc.<span class="fn">mint</span>(alice, <span class="num">100e6</span>);
+    usdc.<span class="fn">mint</span>(bob, <span class="num">400e6</span>);
+
+    <span class="cm">// Alice bets YES, Bob bets NO</span>
+    vm.<span class="fn">startPrank</span>(alice);
+    usdc.<span class="fn">approve</span>(<span class="kw">address</span>(market), <span class="num">100e6</span>);
+    market.<span class="fn">placeBet</span>(<span class="kw">true</span>, <span class="num">100e6</span>);
+    vm.<span class="fn">stopPrank</span>();
+
+    vm.<span class="fn">startPrank</span>(bob);
+    usdc.<span class="fn">approve</span>(<span class="kw">address</span>(market), <span class="num">400e6</span>);
+    market.<span class="fn">placeBet</span>(<span class="kw">false</span>, <span class="num">400e6</span>);
+    vm.<span class="fn">stopPrank</span>();
+
+    <span class="cm">// Resolve YES, Alice claims 500 USDC (5x)</span>
+    market.<span class="fn">resolve</span>(PredictionMarket.Outcome.Yes);
+    vm.<span class="fn">prank</span>(alice);
+    market.<span class="fn">claimWinnings</span>();
+    <span class="fn">assertEq</span>(usdc.<span class="fn">balanceOf</span>(alice), <span class="num">500e6</span>);
+}</code></pre>
+      <p><strong>Target coverage:</strong> 98%+ line, 100% function, 94%+ branch.</p>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <h3>Day 5 Exercises</h3>
+    <ol>
+      <li><strong>Set up Foundry:</strong> Install it. Create a project. Compile the Market + Factory contracts.</li>
+      <li><strong>Write 5 tests:</strong> (a) successful bet, (b) claim winnings, (c) prevent double-claims, (d) prevent bets on resolved markets, (e) only oracle can resolve.</li>
+      <li><strong>Add a fee:</strong> Modify the contract to take 2% from the total pool. Who receives it? Fix the payout formula.</li>
+      <li><strong>Fuzz test:</strong> Verify that total payouts never exceed total deposits.</li>
+      <li><strong>Security review:</strong> Check for reentrancy, overflow, access control gaps, DoS vectors.</li>
+    </ol>
+  </div>
+
+  <div class="day-nav">
+    <button onclick="showDay(4)">&larr; Day 4: Oracles</button>
+    <button onclick="showDay(6)">Day 6: Tokens &amp; DeFi &rarr;</button>
+  </div>
+</div>
+
+<!-- ==================== DAY 6 ==================== -->
+<div class="day-section" id="day-6">
+  <div class="day-header">
+    <span class="day-badge">DAY 6</span>
+    <h1>Tokens, Oracles &amp; DeFi Integration</h1>
+    <p>The full stack: integrating oracles, understanding tokens, and scaling with L2s.</p>
+  </div>
+
+  <div class="goals-card">
+    <h3>Learning Goals</h3>
+    <ul>
+      <li>Integrate UMA Optimistic Oracle into your prediction market</li>
+      <li>Understand ERC-20 and ERC-1155 token standards in depth</li>
+      <li>Learn Layer 2 scaling and why Polymarket chose Polygon</li>
+      <li>Understand DeFi composability opportunities</li>
+    </ul>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>6.1 Integrating UMA's Optimistic Oracle</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+<pre><code><span class="kw">import</span> <span class="st">"@uma/core/.../OptimisticOracleV3Interface.sol"</span>;
+
+<span class="kw">contract</span> <span class="tp">PredictionMarketWithUMA</span> {
+    <span class="tp">OptimisticOracleV3Interface</span> <span class="kw">public</span> oracle;
+    <span class="tp">bytes32</span> <span class="kw">public</span> assertionId;
+
+    <span class="cm">// Step 1: Request resolution</span>
+    <span class="kw">function</span> <span class="fn">requestResolution</span>() <span class="kw">external</span> {
+        assertionId = oracle.<span class="fn">assertTruth</span>(
+            abi.<span class="fn">encodePacked</span>(<span class="st">"Outcome of market XYZ is: YES"</span>),
+            msg.sender,        <span class="cm">// asserter</span>
+            <span class="kw">address</span>(<span class="kw">this</span>),     <span class="cm">// callback recipient</span>
+            <span class="kw">address</span>(<span class="num">0</span>),        <span class="cm">// no escalation manager</span>
+            liveness,          <span class="cm">// challenge period (e.g. 7200s)</span>
+            collateral,        <span class="cm">// bond currency</span>
+            bondAmount,        <span class="cm">// bond amount</span>
+            <span class="kw">bytes32</span>(<span class="num">0</span>),       <span class="cm">// default identifier</span>
+            <span class="kw">bytes32</span>(<span class="num">0</span>)        <span class="cm">// no domain</span>
+        );
+    }
+
+    <span class="cm">// Step 2: Callback after liveness (if undisputed)</span>
+    <span class="kw">function</span> <span class="fn">assertionResolvedCallback</span>(
+        <span class="tp">bytes32</span> _id, <span class="tp">bool</span> _truthful
+    ) <span class="kw">external</span> {
+        <span class="kw">require</span>(msg.sender == <span class="kw">address</span>(oracle));
+        <span class="kw">if</span> (_truthful) <span class="fn">_resolve</span>(Outcome.Yes);
+        <span class="kw">else</span>           <span class="fn">_resolve</span>(Outcome.No);
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>6.2 Token Standards Deep Dive</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>ERC-20 (Fungible Tokens)</h4>
+      <p>The standard for currencies and utility tokens. Key functions: <code>transfer</code>, <code>approve</code>, <code>transferFrom</code>. Used for USDC collateral, REP governance.</p>
+
+      <h4>ERC-1155 (Multi-Token)</h4>
+      <p>A single contract manages unlimited token types. Each type has an ID and balance per address.</p>
+<pre><code><span class="cm">// ERC-20: One contract per token type</span>
+USDC_Contract.<span class="fn">balanceOf</span>(alice)       <span class="cm">// Alice's USDC</span>
+DAI_Contract.<span class="fn">balanceOf</span>(alice)        <span class="cm">// Different contract!</span>
+
+<span class="cm">// ERC-1155: One contract, many token types</span>
+CTF.<span class="fn">balanceOf</span>(alice, YES_TOKEN_ID)  <span class="cm">// Alice's YES tokens</span>
+CTF.<span class="fn">balanceOf</span>(alice, NO_TOKEN_ID)   <span class="cm">// Same contract!</span></code></pre>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Why ERC-1155 for Prediction Markets?</div>
+        <ul style="margin-top:8px">
+          <li><strong>Gas efficient:</strong> batch transfers of multiple token types in one tx</li>
+          <li><strong>Single contract:</strong> no separate deployment per market</li>
+          <li><strong>Atomic operations:</strong> split/merge involve multiple types simultaneously</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>6.3 Layer 2 Scaling</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <p>Ethereum L1 gas costs make frequent small bets prohibitively expensive. L2s process transactions off-chain, posting proofs back to L1.</p>
+
+      <table>
+        <thead><tr><th>Type</th><th>Examples</th><th>How It Works</th><th>Tradeoff</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Optimistic Rollups</strong></td><td>Arbitrum, Optimism, Base</td><td>Assume validity unless challenged</td><td>7-day withdrawal delay</td></tr>
+          <tr><td><strong>ZK Rollups</strong></td><td>zkSync, Scroll, Polygon zkEVM</td><td>Cryptographic proof of correctness</td><td>Faster finality, more complex</td></tr>
+          <tr><td><strong>Sidechains</strong></td><td>Polygon PoS</td><td>Separate chain, periodic checkpoints</td><td>Independent security model</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Why Polymarket Chose Polygon</h4>
+      <ul>
+        <li>Gas costs: ~$0.001 per tx vs $5-50 on L1</li>
+        <li>~2 second block times</li>
+        <li>EVM compatible: same Solidity contracts work</li>
+        <li>Mature bridge infrastructure for USDC</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>6.4 DeFi Composability</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li><strong>Yield on Collateral:</strong> Drift BET (Solana) lets collateral earn lending yield while locked in markets.</li>
+        <li><strong>DEX Integration:</strong> Outcome tokens (YES/NO) tradeable on Uniswap/Raydium for additional liquidity.</li>
+        <li><strong>Lending Against Positions:</strong> High-probability tokens used as loan collateral for capital efficiency.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Reading &amp; Resources</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li><a href="https://docs.uma.xyz/" target="_blank">UMA Optimistic Oracle V3 Docs</a></li>
+        <li><a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-1155/" target="_blank">ERC-1155 Multi Token Standard</a></li>
+        <li><a href="https://docs.polygon.technology/" target="_blank">Polygon Documentation</a></li>
+        <li><a href="https://ethereum.org/en/developers/docs/scaling/" target="_blank">Ethereum L2 Scaling</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <h3>Day 6 Exercises</h3>
+    <ol>
+      <li><strong>Token comparison table:</strong> Create a table comparing ERC-20, ERC-721, ERC-1155. For each: transfer signatures, batch support, prediction market use case.</li>
+      <li><strong>L2 cost analysis:</strong> Using <a href="https://l2fees.info" target="_blank">l2fees.info</a>, compare swap costs on L1 vs Polygon vs Arbitrum vs Base. If 10,000 bets/day, what's the daily gas bill?</li>
+      <li><strong>Oracle integration pseudocode:</strong> Write the full flow: market creation, requesting resolution, handling callback, handling disputes.</li>
+      <li><strong>DeFi composability brainstorm:</strong> List 3 ways a prediction market could integrate with DeFi. Describe the integration, user benefit, and technical requirements.</li>
+    </ol>
+  </div>
+
+  <div class="day-nav">
+    <button onclick="showDay(5)">&larr; Day 5: Building Contracts</button>
+    <button onclick="showDay(7)">Day 7: System Design &rarr;</button>
+  </div>
+</div>
+
+<!-- ==================== DAY 7 ==================== -->
+<div class="day-section" id="day-7">
+  <div class="day-header">
+    <span class="day-badge">DAY 7</span>
+    <h1>Architecture, System Design &amp; Building Your Own</h1>
+    <p>Putting it all together: full-stack architecture and your V1 roadmap.</p>
+  </div>
+
+  <div class="goals-card">
+    <h3>Learning Goals</h3>
+    <ul>
+      <li>Design a complete prediction market system end-to-end</li>
+      <li>Understand frontend integration (wallets, RPCs, indexers)</li>
+      <li>Learn about governance, upgrades, and operational concerns</li>
+      <li>Build a roadmap for your own project</li>
+    </ul>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>7.1 Full System Architecture</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="diagram">+--------------------------------------------------+
+|                    FRONTEND                       |
+|   React/Next.js + viem/wagmi + wallet SDK         |
++--------------------------------------------------+
+|                    INDEXER                         |
+|   The Graph / custom indexer (reads events)        |
++--------------------------------------------------+
+|               OFF-CHAIN SERVICES                  |
+|   Order matching (CLOB) / API / metadata           |
++--------------------------------------------------+
+|              SMART CONTRACTS (On-Chain)            |
+|  +----------------+  +------------------------+   |
+|  | Market         |  | Conditional Token      |   |
+|  | Factory        |  | Framework (ERC-1155)   |   |
+|  +-------+--------+  +-----------+------------+   |
+|          |                        |                |
+|  +-------v--------+  +-----------v------------+   |
+|  | Individual      |  | Collateral             |   |
+|  | Markets         |  | (USDC / ERC-20)        |   |
+|  +-----------------+  +------------------------+   |
+|          |                                         |
+|  +-------v---------------------------------+       |
+|  | Oracle Adapter (UMA / Chainlink)        |       |
+|  +-----------------------------------------+       |
++--------------------------------------------------+
+|              BLOCKCHAIN (L1/L2)                    |
+|   Polygon / Arbitrum / Base / Solana               |
++--------------------------------------------------+</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>7.2 Frontend Integration</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Reading Contract State (viem)</h4>
+<pre><code><span class="kw">import</span> { createPublicClient, http } <span class="kw">from</span> <span class="st">'viem'</span>
+<span class="kw">import</span> { polygon } <span class="kw">from</span> <span class="st">'viem/chains'</span>
+
+<span class="kw">const</span> client = <span class="fn">createPublicClient</span>({
+  chain: polygon,
+  transport: <span class="fn">http</span>()
+})
+
+<span class="cm">// Read market state</span>
+<span class="kw">const</span> yesPool = <span class="kw">await</span> client.<span class="fn">readContract</span>({
+  address: marketAddress,
+  abi: predictionMarketABI,
+  functionName: <span class="st">'yesPool'</span>
+})
+
+<span class="cm">// Place a bet (requires wallet)</span>
+<span class="kw">const</span> hash = <span class="kw">await</span> walletClient.<span class="fn">writeContract</span>({
+  address: marketAddress,
+  abi: predictionMarketABI,
+  functionName: <span class="st">'placeBet'</span>,
+  args: [<span class="kw">true</span>, <span class="fn">parseUnits</span>(<span class="st">'100'</span>, <span class="num">6</span>)]
+})</code></pre>
+
+      <h4>Event Indexing (The Graph)</h4>
+<pre><code><span class="cm">// GraphQL query for markets</span>
+{
+  <span class="fn">markets</span>(first: <span class="num">10</span>, orderBy: totalPool, orderDirection: desc) {
+    id
+    question
+    yesPool
+    noPool
+    state
+    bets {
+      user
+      isYes
+      amount
+    }
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>7.3 Design Decisions Checklist</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead><tr><th>Decision</th><th>Options</th><th>Tradeoff</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Chain</strong></td><td>Polygon, Arbitrum, Base, Solana</td><td>Cost vs security vs ecosystem</td></tr>
+          <tr><td><strong>Market creation</strong></td><td>Permissionless vs curated</td><td>Spam risk vs coverage</td></tr>
+          <tr><td><strong>Outcome types</strong></td><td>Binary, categorical, scalar</td><td>Complexity vs flexibility</td></tr>
+          <tr><td><strong>Liquidity</strong></td><td>CLOB, LMSR, CPMM, pm-AMM</td><td>Capital efficiency vs bootstrapping</td></tr>
+          <tr><td><strong>Oracle</strong></td><td>UMA, Chainlink, custom</td><td>Cost vs decentralization vs speed</td></tr>
+          <tr><td><strong>Collateral</strong></td><td>ETH, USDC, multi-collateral</td><td>Volatility risk vs accessibility</td></tr>
+          <tr><td><strong>Token standard</strong></td><td>ERC-20 per market vs ERC-1155</td><td>Simplicity vs gas efficiency</td></tr>
+          <tr><td><strong>Upgradeability</strong></td><td>Immutable, UUPS, Diamond</td><td>Security vs flexibility</td></tr>
+          <tr><td><strong>Fee model</strong></td><td>% of pool, spread, creation fee</td><td>Revenue vs adoption</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>7.4 Common Pitfalls to Avoid</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <ol>
+        <li><strong>Underestimating oracle complexity</strong> &mdash; the oracle is the hardest part. Use UMA or Chainlink, don't build a custom one.</li>
+        <li><strong>Ignoring gas costs</strong> &mdash; a $50-per-bet market is dead on arrival. Use L2s. Design for batch operations.</li>
+        <li><strong>One-sided market risk</strong> &mdash; if all bets are on one side, handle it (cancel/refund, or use an AMM).</li>
+        <li><strong>Reentrancy in claim functions</strong> &mdash; the #1 source of prediction market exploits.</li>
+        <li><strong>Oracle manipulation</strong> &mdash; don't use DEX spot prices. Use TWAPs, multiple sources, or human-verified oracles.</li>
+        <li><strong>Regulatory ignorance</strong> &mdash; prediction markets are regulated differently across jurisdictions (CFTC, MiCA).</li>
+        <li><strong>Over-engineering V1</strong> &mdash; start simple: binary markets, single collateral, admin resolution. Add complexity iteratively.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>7.5 Your V1 Roadmap</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Weeks 1-2: Smart Contracts</h4>
+      <div class="check-item"><input type="checkbox" id="r1"><label for="r1">PredictionMarket.sol with binary outcomes</label></div>
+      <div class="check-item"><input type="checkbox" id="r2"><label for="r2">PredictionMarketFactory.sol</label></div>
+      <div class="check-item"><input type="checkbox" id="r3"><label for="r3">ERC-20 collateral integration (USDC)</label></div>
+      <div class="check-item"><input type="checkbox" id="r4"><label for="r4">Admin-based oracle resolution (for testing)</label></div>
+      <div class="check-item"><input type="checkbox" id="r5"><label for="r5">Full test suite: unit, integration, fuzz</label></div>
+      <div class="check-item"><input type="checkbox" id="r6"><label for="r6">Deploy to testnet (Sepolia or Mumbai)</label></div>
+
+      <h4>Weeks 3-4: Oracle Integration</h4>
+      <div class="check-item"><input type="checkbox" id="r7"><label for="r7">Integrate UMA Optimistic Oracle</label></div>
+      <div class="check-item"><input type="checkbox" id="r8"><label for="r8">Handle dispute callbacks</label></div>
+      <div class="check-item"><input type="checkbox" id="r9"><label for="r9">End-to-end resolution flow on testnet</label></div>
+      <div class="check-item"><input type="checkbox" id="r10"><label for="r10">Emergency pause mechanism</label></div>
+
+      <h4>Weeks 5-6: Frontend</h4>
+      <div class="check-item"><input type="checkbox" id="r11"><label for="r11">Wallet connection (MetaMask, WalletConnect)</label></div>
+      <div class="check-item"><input type="checkbox" id="r12"><label for="r12">Market browsing and creation UI</label></div>
+      <div class="check-item"><input type="checkbox" id="r13"><label for="r13">Bet placement and position tracking</label></div>
+      <div class="check-item"><input type="checkbox" id="r14"><label for="r14">Event indexing (The Graph or custom)</label></div>
+
+      <h4>Weeks 7-8: Production</h4>
+      <div class="check-item"><input type="checkbox" id="r15"><label for="r15">Security audit (Slither, Mythril, or professional)</label></div>
+      <div class="check-item"><input type="checkbox" id="r16"><label for="r16">Gas optimization</label></div>
+      <div class="check-item"><input type="checkbox" id="r17"><label for="r17">Deploy to L2 mainnet (Polygon or Base)</label></div>
+      <div class="check-item"><input type="checkbox" id="r18"><label for="r18">Monitoring and alerting</label></div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <h3>Day 7 Exercises</h3>
+    <ol>
+      <li><strong>System design:</strong> Write a 2-page architecture doc for a sports prediction market covering: contract architecture, oracle strategy, liquidity, frontend, chain selection.</li>
+      <li><strong>Security audit:</strong> Run Slither or Mythril on your Day 5 contracts. Document every finding.</li>
+      <li><strong>Deploy to testnet:</strong> Deploy factory + market to Sepolia. Create a market, bet from two accounts, resolve, claim winnings.</li>
+      <li><strong>Competitive analysis:</strong> Compare Polymarket, Augur, and Drift BET on: oracle, fees, liquidity, chain, market types.</li>
+    </ol>
+  </div>
+
+  <div class="day-nav">
+    <button onclick="showDay(6)">&larr; Day 6: Tokens &amp; DeFi</button>
+    <button onclick="showDay(8)">Appendix: Glossary &rarr;</button>
+  </div>
+</div>
+
+<!-- ==================== APPENDIX ==================== -->
+<div class="day-section" id="day-8">
+  <div class="day-header">
+    <span class="day-badge">APPENDIX</span>
+    <h1>Glossary &amp; Essential Links</h1>
+    <p>Quick reference for key terms and resources.</p>
+  </div>
+
+  <div class="section open">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Key Terminology</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td><strong>AMM</strong></td><td>Automated Market Maker &mdash; algorithmic liquidity provider</td></tr>
+          <tr><td><strong>CEI</strong></td><td>Checks-Effects-Interactions &mdash; security pattern for smart contracts</td></tr>
+          <tr><td><strong>CLOB</strong></td><td>Central Limit Order Book &mdash; traditional order matching</td></tr>
+          <tr><td><strong>Collateral</strong></td><td>The asset locked to create outcome tokens (e.g., USDC)</td></tr>
+          <tr><td><strong>Conditional Token</strong></td><td>ERC-1155 token representing a specific outcome of an event</td></tr>
+          <tr><td><strong>CTF</strong></td><td>Conditional Token Framework &mdash; Gnosis standard for outcome tokens</td></tr>
+          <tr><td><strong>EVM</strong></td><td>Ethereum Virtual Machine &mdash; execution environment for contracts</td></tr>
+          <tr><td><strong>Finality</strong></td><td>The point after which a transaction cannot be reversed</td></tr>
+          <tr><td><strong>Gas</strong></td><td>Unit of computation on Ethereum; users pay gas fees</td></tr>
+          <tr><td><strong>Impermanent Loss</strong></td><td>Loss LPs face when token prices diverge from initial ratio</td></tr>
+          <tr><td><strong>L2</strong></td><td>Layer 2 &mdash; scaling solution that processes transactions off-chain</td></tr>
+          <tr><td><strong>LMSR</strong></td><td>Logarithmic Market Scoring Rule &mdash; AMM for prediction markets</td></tr>
+          <tr><td><strong>Oracle</strong></td><td>Service that feeds real-world data to smart contracts</td></tr>
+          <tr><td><strong>PDA</strong></td><td>Program Derived Address (Solana) &mdash; deterministic program-controlled address</td></tr>
+          <tr><td><strong>Reentrancy</strong></td><td>Attack where a contract is re-entered before its first call completes</td></tr>
+          <tr><td><strong>Slashing</strong></td><td>Penalty for dishonest validators (partial/full stake loss)</td></tr>
+          <tr><td><strong>TWAP</strong></td><td>Time-Weighted Average Price &mdash; smoothed price over a window</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>Essential Links</h2>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <h4>Blockchain Fundamentals</h4>
+      <ul>
+        <li><a href="https://bitcoin.org/en/how-it-works" target="_blank">Bitcoin: How It Works</a></li>
+        <li><a href="https://ethereum.org/en/developers/docs/" target="_blank">Ethereum Developer Docs</a></li>
+        <li><a href="https://solana.com/docs" target="_blank">Solana Developer Docs</a></li>
+        <li><a href="https://docs.soliditylang.org/" target="_blank">Solidity Documentation</a></li>
+      </ul>
+
+      <h4>Prediction Market Protocols</h4>
+      <ul>
+        <li><a href="https://docs.polymarket.com/" target="_blank">Polymarket Docs</a></li>
+        <li><a href="https://docs.gnosis.io/conditionaltokens/" target="_blank">Gnosis Conditional Tokens</a></li>
+        <li><a href="https://docs.uma.xyz/" target="_blank">UMA Oracle Docs</a></li>
+        <li><a href="https://docs.augur.net/" target="_blank">Augur Docs</a></li>
+      </ul>
+
+      <h4>Development Tools</h4>
+      <ul>
+        <li><a href="https://book.getfoundry.sh/" target="_blank">Foundry Book</a></li>
+        <li><a href="https://hardhat.org/docs" target="_blank">Hardhat Docs</a></li>
+        <li><a href="https://docs.openzeppelin.com/" target="_blank">OpenZeppelin Contracts</a></li>
+        <li><a href="https://remix.ethereum.org" target="_blank">Remix IDE</a></li>
+        <li><a href="https://thegraph.com/docs/" target="_blank">The Graph</a></li>
+      </ul>
+
+      <h4>Block Explorers</h4>
+      <ul>
+        <li><a href="https://etherscan.io" target="_blank">Etherscan</a> (Ethereum)</li>
+        <li><a href="https://polygonscan.com" target="_blank">Polygonscan</a> (Polygon)</li>
+        <li><a href="https://solscan.io" target="_blank">Solscan</a> (Solana)</li>
+      </ul>
+
+      <h4>Security Tools</h4>
+      <ul>
+        <li><a href="https://github.com/crytic/slither" target="_blank">Slither (Static Analyzer)</a></li>
+        <li><a href="https://github.com/Consensys/mythril" target="_blank">Mythril (Symbolic Execution)</a></li>
+        <li><a href="https://scsfg.io/" target="_blank">Smart Contract Security Field Guide</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="day-nav">
+    <button onclick="showDay(7)">&larr; Day 7: System Design</button>
+    <button disabled>End of Curriculum</button>
+  </div>
+</div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// --- State ---
+let currentDay = 0;
+const totalDays = 7;
+let completedDays = new Set();
+
+// Load saved state
+try {
+  const saved = localStorage.getItem('pm-curriculum-progress');
+  if (saved) completedDays = new Set(JSON.parse(saved));
+} catch(e) {}
+
+// --- Navigation ---
+function showDay(n) {
+  document.querySelectorAll('.day-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('day-' + n).classList.add('active');
+  currentDay = n;
+
+  // Mark previous day as completed
+  if (n > 1) {
+    completedDays.add(n - 1);
+    try { localStorage.setItem('pm-curriculum-progress', JSON.stringify([...completedDays])); } catch(e) {}
+  }
+
+  updateProgress();
+  updateDayLabel(n);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Update active nav
+  document.querySelectorAll('.nav-items a').forEach(a => a.classList.remove('active'));
+  // Close sidebar on mobile
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('visible');
+    document.getElementById('main').classList.remove('full');
+  }
+}
+
+function updateProgress() {
+  const pct = Math.round((completedDays.size / totalDays) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = completedDays.size + ' of ' + totalDays + ' days completed';
+}
+
+function updateDayLabel(n) {
+  const labels = ['Overview','Day 1: Blockchain Fundamentals','Day 2: Smart Contracts','Day 3: Market Mechanics','Day 4: Oracles','Day 5: Building Contracts','Day 6: Tokens & DeFi','Day 7: System Design','Appendix'];
+  document.getElementById('current-day-label').textContent = labels[n] || 'Overview';
+}
+
+// --- Sidebar ---
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (window.innerWidth <= 900) {
+    sb.classList.toggle('visible');
+  } else {
+    sb.classList.toggle('hidden');
+    document.getElementById('main').classList.toggle('full');
+  }
+}
+
+function toggleNavGroup(el) {
+  el.parentElement.classList.toggle('collapsed');
+}
+
+// --- Sections ---
+function toggleSection(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+// --- Init ---
+updateProgress();
+</script>
+</body>
+</html>
