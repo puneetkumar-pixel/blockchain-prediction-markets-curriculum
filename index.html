@@ -114,7 +114,7 @@ p code,li code{background:var(--sf2);padding:1px 5px;border-radius:3px;font-size
 <body>
 <!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
-  <div class="sb-logo"><h2>Blockchain &amp; Prediction Markets</h2><span>Learn from Zero &bull; 7 Days</span></div>
+  <div class="sb-logo"><h2>Blockchain &amp; Prediction Markets</h2><span>Learn from Zero &bull; 8 Days</span></div>
   <div class="nav-day active" onclick="goDay(0)"><span class="nd-check"></span> Home</div>
   <div class="nav-day" onclick="goDay(1)" id="nav-1"><span class="nd-check">&#10003;</span> Day 1: What is Blockchain?</div>
   <div class="nav-day" onclick="goDay(2)" id="nav-2"><span class="nd-check">&#10003;</span> Day 2: Smart Contracts</div>
@@ -123,6 +123,7 @@ p code,li code{background:var(--sf2);padding:1px 5px;border-radius:3px;font-size
   <div class="nav-day" onclick="goDay(5)" id="nav-5"><span class="nd-check">&#10003;</span> Day 5: Building Contracts</div>
   <div class="nav-day" onclick="goDay(6)" id="nav-6"><span class="nd-check">&#10003;</span> Day 6: Tokens &amp; Scaling</div>
   <div class="nav-day" onclick="goDay(7)" id="nav-7"><span class="nd-check">&#10003;</span> Day 7: Full System Design</div>
+  <div class="nav-day" onclick="goDay(8)" id="nav-8"><span class="nd-check">&#10003;</span> Day 8: On/Off Ramp Payments</div>
 </nav>
 
 <!-- Main -->
@@ -137,7 +138,7 @@ p code,li code{background:var(--sf2);padding:1px 5px;border-radius:3px;font-size
 <div class="day active" id="day-0">
 <div class="landing">
   <h1>Blockchain &amp;<br><span>Prediction Markets</span></h1>
-  <p>A 7-day journey from "What is blockchain?" to "I can build a prediction market." No prior crypto knowledge needed. Every concept explained with real-world analogies. Progress unlocks only when you prove understanding.</p>
+  <p>An 8-day journey from "What is blockchain?" to "I can build a prediction market." No prior crypto knowledge needed. Every concept explained with real-world analogies. Progress unlocks only when you prove understanding.</p>
   <div class="dgrid">
     <div class="dc" onclick="goDay(1)"><div class="dn">1</div><h3>What is Blockchain?</h3><p>Like a Google Sheet the whole world shares but nobody can cheat on</p><span class="dt">Foundation</span></div>
     <div class="dc" onclick="goDay(2)"><div class="dn">2</div><h3>Smart Contracts</h3><p>Vending machines that run on the internet &mdash; insert money, get guaranteed results</p><span class="dt">Foundation</span></div>
@@ -146,6 +147,7 @@ p code,li code{background:var(--sf2);padding:1px 5px;border-radius:3px;font-size
     <div class="dc" onclick="goDay(5)"><div class="dn">5</div><h3>Building Contracts</h3><p>Writing actual code: a prediction market from scratch in Solidity</p><span class="dt">Build</span></div>
     <div class="dc" onclick="goDay(6)"><div class="dn">6</div><h3>Tokens &amp; Scaling</h3><p>Digital casino chips, express highway lanes, and connecting to the real world</p><span class="dt">Build</span></div>
     <div class="dc" onclick="goDay(7)"><div class="dn">7</div><h3>System Design</h3><p>Putting it all together into a product people can actually use</p><span class="dt">Ship</span></div>
+    <div class="dc" onclick="goDay(8)"><div class="dn">8</div><h3>On/Off Ramp Payments</h3><p>The bridge between your bank account and the blockchain &mdash; how real money flows in and out</p><span class="dt">Payments</span></div>
   </div>
 </div>
 </div>
@@ -1275,7 +1277,449 @@ forge test --gas-report   <span class="cm"># see cost of each function</span></c
 
 <div class="dnav">
 <button onclick="goDay(6)">&larr; Day 6</button>
-<button disabled id="next-7">Curriculum Complete!</button>
+<button onclick="goDay(8)" id="next-7" disabled>Day 8: On/Off Ramp Payments &rarr;</button>
+</div>
+</div>
+
+<!-- ========== DAY 8 ========== -->
+<div class="day" id="day-8">
+<div class="dh"><span class="dbg">DAY 8 &bull; BONUS</span><h1>On-Ramp &amp; Off-Ramp &mdash; The Bridge Between Your Bank and the Blockchain</h1><p>How does real money (dollars, rupees, euros) get into crypto and back out? The complete payments pipeline.</p></div>
+
+<div class="sec open"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>The Core Problem: Two Different Worlds</h2><span class="tgl">+</span></div><div class="sec-b">
+<div class="analogy"><p><strong>Imagine you're at an international airport.</strong> You have Indian Rupees, but the country you're visiting only accepts Euros. You need a <strong>currency exchange counter</strong> at the airport. You hand over Rupees, show your passport (identity verification), pay a small fee, and receive Euros. When you return home, you do the reverse: Euros back to Rupees.</p>
+<p><strong>On-ramp = the currency exchange counter at departure</strong> (fiat &rarr; crypto).<br>
+<strong>Off-ramp = the currency exchange counter at arrival</strong> (crypto &rarr; fiat).</p></div>
+
+<p>The blockchain world runs on crypto (ETH, USDC, SOL). Your bank account holds fiat (USD, INR, EUR). These two systems <strong>don't natively talk to each other</strong>. On-ramps and off-ramps are the bridges that connect them.</p>
+
+<h4>Why Can't You Just "Send" Dollars to a Blockchain?</h4>
+<p>Because traditional banks and blockchains speak completely different languages:</p>
+<table>
+<thead><tr><th></th><th>Traditional Banking</th><th>Blockchain</th></tr></thead>
+<tbody>
+<tr><td><strong>Identity</strong></td><td>Name, account number, SSN</td><td>Cryptographic wallet address (0x...)</td></tr>
+<tr><td><strong>Currency</strong></td><td>USD, EUR, INR (government-issued)</td><td>ETH, USDC, SOL (digital tokens)</td></tr>
+<tr><td><strong>Settlement</strong></td><td>1-3 business days (ACH, SWIFT)</td><td>Seconds to minutes</td></tr>
+<tr><td><strong>Gatekeepers</strong></td><td>Banks, card networks (Visa/Mastercard)</td><td>Nobody &mdash; permissionless</td></tr>
+<tr><td><strong>Reversals</strong></td><td>Chargebacks, disputes possible</td><td>Transactions are final and irreversible</td></tr>
+</tbody>
+</table>
+
+<div class="co co-w"><div class="co-title">The Chargeback Problem</div>This mismatch creates a fundamental tension: if you buy crypto with a credit card and then do a chargeback, the on-ramp provider loses money because the crypto transaction is irreversible. This is why on-ramp fees are higher for credit cards (~4.5%) vs. bank transfers (~1%) &mdash; the provider charges more to cover fraud risk.</div>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>On-Ramp: Getting Money INTO Crypto</h2><span class="tgl">+</span></div><div class="sec-b">
+<div class="analogy"><p><strong>Think of an on-ramp like an ATM in reverse.</strong> At a normal ATM, you insert your card and get cash. With an on-ramp, you insert your payment (card, bank transfer, UPI) and get crypto deposited into your digital wallet. The on-ramp provider handles the messy conversion in the middle.</p></div>
+
+<h4>The Complete On-Ramp Flow (Step by Step)</h4>
+<div class="dia">1. USER: "I want to buy $100 of USDC on Polygon"
+          ↓
+2. ON-RAMP WIDGET: Appears in the dApp (like a checkout form)
+   User enters payment details (card number, bank login, UPI ID)
+          ↓
+3. KYC CHECK: Provider verifies identity
+   - First time: Upload government ID + selfie (takes 2-5 min)
+   - Returning user: Already verified (instant)
+          ↓
+4. PAYMENT PROCESSING: Provider charges user's bank/card
+   - Card: $100 + $4.50 fee = $104.50 charged
+   - Bank transfer: $100 + $1.00 fee = $101.00 charged
+          ↓
+5. CRYPTO PURCHASE: Provider buys/mints USDC on the open market
+          ↓
+6. DELIVERY: $100 USDC sent to user's wallet on Polygon
+   Transaction visible on-chain within minutes
+          ↓
+7. READY: User can now trade on Polymarket, Uniswap, etc.</div>
+
+<h4>Payment Methods Compared</h4>
+<table>
+<thead><tr><th>Method</th><th>Speed</th><th>Typical Fee</th><th>Availability</th><th>Best For</th></tr></thead>
+<tbody>
+<tr><td><strong>Debit/Credit Card</strong></td><td>Minutes</td><td>3.5-4.5%</td><td>Global (Visa/MC)</td><td>First-time users who want instant access</td></tr>
+<tr><td><strong>Bank Transfer (ACH/SEPA)</strong></td><td>1-3 days</td><td>0.5-1%</td><td>US (ACH), EU (SEPA)</td><td>Cost-conscious users who can wait</td></tr>
+<tr><td><strong>UPI</strong></td><td>Instant</td><td>1-2%</td><td>India</td><td>Indian users (instant + cheap)</td></tr>
+<tr><td><strong>Apple Pay / Google Pay</strong></td><td>Minutes</td><td>~3.5%</td><td>US, EU, UK</td><td>Mobile-native users</td></tr>
+<tr><td><strong>SEPA Instant</strong></td><td>Seconds</td><td>~0.5%</td><td>EU</td><td>European users wanting speed + low cost</td></tr>
+<tr><td><strong>PIX</strong></td><td>Instant</td><td>~1%</td><td>Brazil</td><td>Brazilian users</td></tr>
+<tr><td><strong>Exchange Transfer</strong></td><td>Minutes</td><td>Withdrawal fee only</td><td>Global</td><td>Users with existing Coinbase/Binance accounts</td></tr>
+</tbody>
+</table>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>Off-Ramp: Getting Money OUT of Crypto</h2><span class="tgl">+</span></div><div class="sec-b">
+<div class="analogy"><p><strong>Think of off-ramping like cashing in casino chips.</strong> You've been playing all night (trading on-chain), and now you want to leave with real money. You walk to the cashier, hand over your chips (USDC tokens), show your player card (KYC), and the cashier counts out dollar bills (bank deposit) into your hand.</p></div>
+
+<h4>The Complete Off-Ramp Flow</h4>
+<div class="dia">1. USER: Has $5,000 USDC in their Polygon wallet
+          ↓
+2. INITIATE: User clicks "Withdraw to bank" on the platform
+   Or sends USDC to off-ramp provider's address
+          ↓
+3. PROVIDER: Receives USDC on-chain (irreversible, confirmed in seconds)
+          ↓
+4. CONVERSION: Provider sells USDC for fiat on the open market
+          ↓
+5. BANK TRANSFER: Provider sends fiat to user's linked bank account
+   - ACH: 1-4 business days
+   - Wire transfer: Same day or next business day
+   - Debit card push: 3-4 business days
+          ↓
+6. RECEIVED: $4,950 arrives in user's bank account
+   ($50 fee for off-ramp service at ~1%)</div>
+
+<div class="co co-i"><div class="co-title">Why Off-Ramp Is Easier Than On-Ramp</div>Off-ramping has lower fraud risk because the user sends crypto FIRST (irreversible), then receives fiat. The provider already has the crypto in hand before sending money. This is why off-ramp fees (1%) are generally lower than on-ramp card fees (4.5%).</div>
+
+<h4>How Polymarket Handles Withdrawals</h4>
+<table>
+<thead><tr><th>Method</th><th>Speed</th><th>Fee</th><th>Available To</th></tr></thead>
+<tbody>
+<tr><td><strong>Debit card push</strong></td><td>3-4 business days</td><td>Free</td><td>Polymarket US users</td></tr>
+<tr><td><strong>ACH to bank</strong></td><td>1-4 business days</td><td>Free</td><td>Polymarket US users</td></tr>
+<tr><td><strong>Wire transfer</strong></td><td>1 business day</td><td>Free</td><td>Polymarket US users</td></tr>
+<tr><td><strong>USDC to wallet</strong></td><td>Minutes</td><td>Gas only (~$0.01)</td><td>All users globally</td></tr>
+</tbody>
+</table>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>Stablecoins: The Secret Sauce of On/Off Ramps</h2><span class="tgl">+</span></div><div class="sec-b">
+<div class="analogy"><p><strong>Stablecoins are like airport lounge vouchers denominated in US dollars.</strong> Whether you came from India (rupees), Japan (yen), or Brazil (reais), once you exchange into these vouchers, everyone speaks the same "dollar" language inside the airport. The voucher is always worth $1.00, no matter what's happening to Bitcoin or Ethereum's price.</p></div>
+
+<p>Stablecoins are the <strong>backbone</strong> of the on/off-ramp ecosystem. In 2025, stablecoin transactions hit <strong>$33 trillion</strong> in total volume &mdash; more than Visa and Mastercard combined.</p>
+
+<h4>The Two Giants</h4>
+<table>
+<thead><tr><th></th><th>USDC (Circle)</th><th>USDT (Tether)</th></tr></thead>
+<tbody>
+<tr><td><strong>Market Cap</strong></td><td>~$73 billion</td><td>~$175 billion</td></tr>
+<tr><td><strong>Backing</strong></td><td>US Treasuries + cash (fully audited)</td><td>Commercial paper + reserves (less transparent)</td></tr>
+<tr><td><strong>Regulated?</strong></td><td>Yes &mdash; US-regulated, monthly attestations</td><td>Loosely &mdash; based in BVI, less oversight</td></tr>
+<tr><td><strong>Best for</strong></td><td>Institutions, DeFi, prediction markets</td><td>Trading pairs, emerging markets, remittances</td></tr>
+<tr><td><strong>Used by</strong></td><td><strong>Polymarket</strong>, Coinbase, Stripe</td><td>Binance, Tron ecosystem, OTC desks</td></tr>
+</tbody>
+</table>
+
+<h4>Why Prediction Markets Use USDC (Not ETH or BTC)</h4>
+<div class="analogy"><p><strong>Imagine betting $100 on a football match, but the "dollars" you used to bet change value every minute.</strong> You bet "$100" but by the time the game ends, your "$100" might be worth $85 or $120 depending on crypto market moves. You win the bet but lose money because ETH dropped 20%. Stablecoins eliminate this problem &mdash; $1 USDC = $1.00, always.</p></div>
+
+<div class="dia">WHY STABLECOINS DOMINATE THE ON/OFF-RAMP FLOW:
+
+ON-RAMP:                                 OFF-RAMP:
+  Rupees ──→ USDC                          USDC ──→ Dollars
+  Euros  ──→ USDC    ┌──────────┐          USDC ──→ Euros
+  Dollars ─→ USDC ──→│ BLOCKCHAIN│──→ USDC  USDC ──→ Rupees
+  Reais  ──→ USDC    │ (DeFi,   │
+  Yen    ──→ USDC    │ Betting, │
+                      │ Trading) │
+                      └──────────┘
+
+  USDC is the "universal language" inside the blockchain</div>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>Major On-Ramp Platforms: The Complete Landscape</h2><span class="tgl">+</span></div><div class="sec-b">
+
+<h4>Tier 1: Global Leaders</h4>
+
+<h4>MoonPay &mdash; "The Shopify of Crypto Payments"</h4>
+<div class="analogy"><p><strong>Like a universal checkout widget.</strong> Just as Shopify lets any store accept payments with a few lines of code, MoonPay lets any dApp let users buy crypto. Used by Polymarket, OpenSea, Uniswap, and 2,000+ partners. Covers 160+ countries.</p></div>
+<ul>
+<li><strong>Fees:</strong> ~4.5% for cards, ~1% for bank transfers, $3.99 minimum</li>
+<li><strong>Supports:</strong> 100+ cryptocurrencies, Visa, Mastercard, Apple Pay, Samsung Pay, bank transfers</li>
+<li><strong>Integration:</strong> Widget, SDK (React, iOS, Android), API</li>
+<li><strong>KYC:</strong> Handled by MoonPay &mdash; ID + selfie for first-time users</li>
+<li><strong>Off-ramp:</strong> Yes &mdash; sell crypto back to fiat at ~1%</li>
+</ul>
+
+<h4>Transak &mdash; "Best for Global Coverage &amp; UPI"</h4>
+<div class="analogy"><p><strong>Like a payment gateway that speaks every local language.</strong> While MoonPay focuses on cards, Transak excels at local payment methods &mdash; including UPI (India), SEPA Instant (EU), and 20+ regional methods.</p></div>
+<ul>
+<li><strong>Fees:</strong> 1-5% (varies by region and method)</li>
+<li><strong>Supports:</strong> 136+ cryptos, <strong>UPI</strong>, cards, bank transfer, Apple Pay, Google Pay</li>
+<li><strong>Integration:</strong> Widget, SDK (React, React Native, Flutter, Unity)</li>
+<li><strong>Best for:</strong> dApps targeting Indian users (UPI support) and gaming (Unity SDK)</li>
+<li><strong>Off-ramp:</strong> Yes</li>
+</ul>
+
+<h4>Ramp Network &mdash; "Developer-First, Cheapest Bank Transfers"</h4>
+<div class="analogy"><p><strong>Like Stripe for crypto.</strong> Clean API, excellent docs, transparent pricing. Ramp has the lowest bank transfer fees in the industry at 0.49%.</p></div>
+<ul>
+<li><strong>Fees:</strong> ~2.9% cards, <strong>~0.49% bank transfers</strong> (industry-lowest)</li>
+<li><strong>Supports:</strong> 100+ cryptos, 150+ countries, PIX (Brazil), SPEI (Mexico), Open Banking (UK/EU)</li>
+<li><strong>Integration:</strong> Widget, SDK (JS, React, iOS, Android)</li>
+<li><strong>Off-ramp:</strong> Yes</li>
+</ul>
+
+<h4>Coinbase Onramp &mdash; "The Apple Ecosystem Play"</h4>
+<div class="analogy"><p><strong>Like Apple Pay for crypto.</strong> Coinbase Onramp has a unique <strong>Headless API</strong> that lets developers build completely custom UIs. Users can buy crypto with Apple Pay without even having a Coinbase account (guest checkout up to $500/week). Coinbase handles all KYC, fraud, and compliance behind the scenes.</p></div>
+<ul>
+<li><strong>Fees:</strong> Varies (competitive with Coinbase exchange rates)</li>
+<li><strong>Unique:</strong> <strong>Headless API</strong> (full UI control), Apple Pay guest checkout, no developer fees</li>
+<li><strong>Integration:</strong> Widget, React (OnchainKit FundCard), Headless API, one-click-buy URL</li>
+<li><strong>Off-ramp:</strong> Via Coinbase exchange</li>
+</ul>
+
+<h4>Stripe Crypto Onramp &mdash; "Enterprise-Grade"</h4>
+<div class="analogy"><p><strong>Like hiring a full-service compliance department.</strong> Stripe handles KYC, fraud detection, payment processing, AND crypto delivery. The dApp developer never touches user payment data or identity info. If your app already uses Stripe, adding crypto on-ramp takes hours.</p></div>
+<ul>
+<li><strong>Fees:</strong> Standard Stripe processing rates</li>
+<li><strong>Unique:</strong> Stripe handles ALL compliance &mdash; developer has zero KYC burden</li>
+<li><strong>Supports:</strong> Focused on stablecoins (USDC), leverages all Stripe payment methods</li>
+<li><strong>Integration:</strong> Embedded widget, Stripe-hosted page, API</li>
+<li><strong>Off-ramp:</strong> Not yet (on-ramp only as of early 2026)</li>
+</ul>
+
+<h4>Robinhood Connect &mdash; "Leverage Existing Accounts"</h4>
+<ul>
+<li><strong>Unique:</strong> Users buy crypto using their existing Robinhood account balance &mdash; zero extra KYC</li>
+<li><strong>Integration:</strong> Embeddable widget, partnered with MetaMask</li>
+<li><strong>Best for:</strong> US users who already have Robinhood accounts</li>
+</ul>
+
+<h4>Tier 2: Specialized Players</h4>
+<table>
+<thead><tr><th>Provider</th><th>Focus</th><th>Standout Feature</th></tr></thead>
+<tbody>
+<tr><td><strong>Alchemy Pay</strong></td><td>Asia-Pacific</td><td>Visa Ramp Provider, 14 US state licenses</td></tr>
+<tr><td><strong>Banxa</strong></td><td>Enterprise compliance</td><td>Bank-grade AML/KYC</td></tr>
+<tr><td><strong>Sardine</strong></td><td>Fraud prevention</td><td>AI-powered fraud detection + on-ramp combined</td></tr>
+<tr><td><strong>Bitpanda</strong></td><td>EU market</td><td>Fully MiCAR-licensed across EU</td></tr>
+</tbody>
+</table>
+
+<h4>The Aggregator: Onramper</h4>
+<div class="analogy"><p><strong>Like a flight comparison website (Kayak/Skyscanner) for on-ramps.</strong> Instead of choosing one provider, Onramper connects to 30+ providers and routes each transaction to the cheapest/fastest option based on the user's country, payment method, and desired crypto. One integration = access to all providers. Saves users ~2.5% on average.</p></div>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>How to Integrate an On-Ramp (For Developers)</h2><span class="tgl">+</span></div><div class="sec-b">
+
+<h4>Option 1: Drop-in Widget (Easiest &mdash; 30 minutes)</h4>
+<pre><code><span class="cm">&lt;!-- MoonPay widget: add to your dApp --&gt;</span>
+&lt;<span class="kw">script</span>&gt;
+  <span class="kw">const</span> widget = window.<span class="fn">MoonPayWebSdk</span>.<span class="fn">init</span>({
+    flow: <span class="st">'buy'</span>,
+    environment: <span class="st">'production'</span>,
+    params: {
+      apiKey:          <span class="st">'pk_live_YOUR_KEY'</span>,
+      currencyCode:    <span class="st">'usdc_polygon'</span>,       <span class="cm">// what to buy</span>
+      walletAddress:   <span class="st">'0xUserWallet...'</span>,    <span class="cm">// where to send</span>
+      baseCurrencyCode:<span class="st">'usd'</span>,               <span class="cm">// paying with</span>
+      baseCurrencyAmount: <span class="st">'100'</span>,            <span class="cm">// $100 worth</span>
+    }
+  });
+  widget.<span class="fn">show</span>();  <span class="cm">// opens the MoonPay checkout popup</span>
+&lt;/<span class="kw">script</span>&gt;</code></pre>
+
+<h4>Option 2: Coinbase Headless API (Most Customizable)</h4>
+<pre><code><span class="cm">// Fully custom UI &mdash; you control every pixel</span>
+<span class="cm">// Coinbase handles payment processing in the background</span>
+
+<span class="cm">// 1. Generate a buy quote</span>
+<span class="kw">const</span> quote = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">'https://api.developer.coinbase.com/onramp/v1/buy/quote'</span>, {
+  method: <span class="st">'POST'</span>,
+  headers: { <span class="st">'Authorization'</span>: <span class="st">'Bearer YOUR_API_KEY'</span> },
+  body: <span class="fn">JSON.stringify</span>({
+    purchase_currency: <span class="st">'USDC'</span>,
+    purchase_network:  <span class="st">'polygon'</span>,
+    payment_amount:    <span class="st">'100.00'</span>,
+    payment_currency:  <span class="st">'USD'</span>,
+    payment_method:    <span class="st">'APPLE_PAY'</span>
+  })
+});
+
+<span class="cm">// 2. User pays via Apple Pay (your custom UI)</span>
+<span class="cm">// 3. Coinbase delivers USDC to user's wallet</span></code></pre>
+
+<h4>Option 3: Onramper Aggregator (Best Coverage)</h4>
+<pre><code><span class="cm">&lt;!-- One widget, 30+ providers, auto-routes to best option --&gt;</span>
+&lt;<span class="kw">iframe</span>
+  src=<span class="st">"https://buy.onramper.com?apiKey=YOUR_KEY
+       &defaultCrypto=USDC
+       &defaultFiat=INR
+       &wallets=USDC:0xYourWallet"</span>
+  width=<span class="st">"400"</span> height=<span class="st">"600"</span>
+  allow=<span class="st">"payment"</span>
+/&gt;</code></pre>
+
+<h4>Integration Complexity Ranking</h4>
+<table>
+<thead><tr><th>Approach</th><th>Time to Integrate</th><th>Customization</th><th>Best For</th></tr></thead>
+<tbody>
+<tr><td><strong>Stripe Hosted Page</strong></td><td>Hours</td><td>Low (Stripe-styled)</td><td>Enterprise apps already on Stripe</td></tr>
+<tr><td><strong>Coinbase one-click URL</strong></td><td>Minutes</td><td>Minimal</td><td>Quick prototype / hackathon</td></tr>
+<tr><td><strong>Onramper widget</strong></td><td>30 min</td><td>Moderate (theming)</td><td>Global audience, need many providers</td></tr>
+<tr><td><strong>MoonPay / Transak widget</strong></td><td>1-2 hours</td><td>Moderate</td><td>Consumer dApps</td></tr>
+<tr><td><strong>Coinbase Headless API</strong></td><td>Days-weeks</td><td>Full (your own UI)</td><td>Custom branded experience</td></tr>
+</tbody>
+</table>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>KYC &amp; Compliance: The Legal Guardrails</h2><span class="tgl">+</span></div><div class="sec-b">
+<div class="analogy"><p><strong>Think of KYC like airport security.</strong> Before you can board a flight (access the financial system), you must prove your identity. The more expensive the flight (the larger the transaction), the more checks you go through. Economy (Tier 1): show your ID. First class (Tier 2): show your ID + boarding pass + answer extra questions. Private jet (Institutional): show everything, plus explain where the money came from.</p></div>
+
+<h4>Tiered KYC Levels</h4>
+<table>
+<thead><tr><th>Tier</th><th>What You Provide</th><th>Typical Limit</th><th>Analogy</th></tr></thead>
+<tbody>
+<tr><td><strong>Tier 0 (Guest)</strong></td><td>Email only</td><td>$50-500</td><td>Buying a coffee &mdash; no ID needed</td></tr>
+<tr><td><strong>Tier 1 (Basic)</strong></td><td>Government ID + selfie</td><td>$5,000-10,000/month</td><td>Opening a bank account</td></tr>
+<tr><td><strong>Tier 2 (Enhanced)</strong></td><td>ID + proof of address + source of funds</td><td>$50,000+/month</td><td>Applying for a mortgage</td></tr>
+<tr><td><strong>Institutional</strong></td><td>Corporate docs, UBO identification, ongoing monitoring</td><td>Custom</td><td>Company IPO due diligence</td></tr>
+</tbody>
+</table>
+
+<h4>Key Regulations (2025-2026)</h4>
+<div class="co co-i"><div class="co-title">US: GENIUS Act (July 2025)</div>First federal stablecoin framework. Requires stablecoin issuers with $10B+ to get federal oversight. Bans foreign-issued stablecoins that don't meet US standards. Full implementation by July 2026.</div>
+
+<div class="co co-i"><div class="co-title">EU: MiCA (Markets in Crypto-Assets Regulation)</div>Harmonized rules across all 27 EU member states. Requires 1:1 reserve backing for stablecoins, mandatory audits, passporting rights (license in one country, operate in all). Full enforcement deadline: July 1, 2026.</div>
+
+<div class="co co-w"><div class="co-title">Consequences of Non-Compliance</div>Multi-million dollar fines, loss of banking services, asset freezes, and criminal liability for executives. This is why every serious on-ramp provider invests heavily in compliance.</div>
+
+<h4>Who Handles KYC? (The Developer's Perspective)</h4>
+<div class="analogy"><p><strong>The best part for developers:</strong> YOU don't have to. Every major on-ramp provider handles KYC themselves. When you embed a MoonPay widget, MoonPay does the identity verification. When you use Stripe Crypto, Stripe does the compliance. You never see or store user identity documents. It's like being a restaurant that accepts credit cards &mdash; Visa handles the fraud, not you.</p></div>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>Polymarket Case Study: The Complete Payment Flow</h2><span class="tgl">+</span></div><div class="sec-b">
+<p>Let's trace exactly how money flows through Polymarket &mdash; the world's largest prediction market.</p>
+
+<div class="dia">
+ALICE IN CALIFORNIA wants to bet $500 on "Will AI pass the bar exam?"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ON-RAMP (Getting money in):
+──────────────────────────
+Option A: MoonPay (in-app card purchase)
+  Alice's Visa card ──$522.50──→ MoonPay ──$500 USDC──→ Polygon wallet
+  Fee: $22.50 (4.5%)        KYC: ID + selfie (first time)
+
+Option B: Coinbase Pay
+  Alice's Coinbase ──$502──→ Polygon wallet
+  Fee: ~$2 (exchange withdrawal)    KYC: Already done on Coinbase
+
+Option C: Direct transfer (crypto-native)
+  Alice's MetaMask ──$500 USDC──→ Polygon wallet
+  Fee: ~$0.01 (gas)         KYC: None needed (wallet-to-wallet)
+
+TRADING (On-chain):
+──────────────────
+  $500 USDC → Split → 500 YES tokens + 500 NO tokens
+  → Sell 500 NO tokens at $0.35 → Receive $175
+  → Net position: 500 YES tokens, cost basis $325
+
+  [Weeks pass... AI passes the bar exam]
+
+  500 YES tokens → Redeem → $500 USDC
+  Profit: $500 - $325 = $175
+
+OFF-RAMP (Getting money out):
+────────────────────────────
+  $500 USDC in Polygon wallet
+
+Option A: Polymarket US direct withdrawal
+  → Wire transfer → $500 in Alice's bank (1 business day, free)
+
+Option B: Exchange route
+  → Send USDC to Coinbase → Sell for USD → Withdraw to bank
+  Fee: ~$1-5         Time: 1-3 days
+
+Option C: Keep as USDC
+  → Alice keeps $500 USDC for next trade (no off-ramp needed)
+</div>
+
+<div class="co co-t"><div class="co-title">Critical Warning</div>Polymarket operates exclusively with <strong>USDC on the Polygon network</strong>. Sending BTC, ETH, or USDC on the wrong network (like Ethereum mainnet) will result in <strong>permanent loss of funds</strong>. Always verify the network before sending.</div>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>Choosing the Right On-Ramp: Decision Framework</h2><span class="tgl">+</span></div><div class="sec-b">
+
+<table>
+<thead><tr><th>If Your Users Are...</th><th>Best Provider</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>In <strong>India</strong> (need UPI)</td><td><strong>Transak</strong></td><td>Only major provider with full UPI support</td></tr>
+<tr><td>In the <strong>US</strong> (existing Coinbase users)</td><td><strong>Coinbase Onramp</strong></td><td>Zero friction, Apple Pay, guest checkout</td></tr>
+<tr><td>In <strong>Europe</strong> (want cheap bank transfers)</td><td><strong>Ramp Network</strong></td><td>0.49% SEPA fees &mdash; industry lowest</td></tr>
+<tr><td><strong>Global</strong> (maximum coverage)</td><td><strong>Onramper</strong> (aggregator)</td><td>30+ providers, auto-routes to best option</td></tr>
+<tr><td><strong>Enterprise</strong> (need full compliance)</td><td><strong>Stripe Crypto</strong></td><td>Stripe handles everything &mdash; KYC, fraud, payments</td></tr>
+<tr><td><strong>Cost-sensitive</strong> (want cheapest)</td><td><strong>Ramp</strong> (bank) or <strong>exchange transfer</strong></td><td>0.49% or exchange withdrawal fee only</td></tr>
+<tr><td><strong>Speed-sensitive</strong> (want instant)</td><td><strong>MoonPay</strong> or <strong>Transak</strong> (card)</td><td>Minutes from card charge to USDC in wallet</td></tr>
+</tbody>
+</table>
+
+<div class="scenario"><p><strong>Building a prediction market for Indian users?</strong> Use <strong>Transak</strong> for UPI on-ramp (instant, ~1% fee), settle on <strong>Polygon</strong> ($0.001 per bet), and let users off-ramp back via Transak to their bank. Total cost for a $100 bet cycle: ~$2 in + ~$1 out = $3 total. That's cheaper than most sports betting platforms.</p></div>
+</div></div>
+
+<div class="sec"><div class="sec-h" onclick="this.parentElement.classList.toggle('open')"><h2>Further Reading</h2><span class="tgl">+</span></div><div class="sec-b">
+<ul>
+<li><a href="https://www.moonpay.com/en-gb/business" target="_blank">MoonPay for Business</a> &mdash; widget integration guide</li>
+<li><a href="https://transak.com/integration" target="_blank">Transak Developer Integration</a> &mdash; SDK for React, Flutter, Unity</li>
+<li><a href="https://docs.ramp.network/" target="_blank">Ramp Network Docs</a> &mdash; developer-first documentation</li>
+<li><a href="https://docs.cdp.coinbase.com/onramp-&-offramp/introduction/welcome" target="_blank">Coinbase Onramp &amp; Offramp Docs</a></li>
+<li><a href="https://docs.stripe.com/crypto/onramp" target="_blank">Stripe Crypto Onramp Docs</a></li>
+<li><a href="https://www.onramper.com/" target="_blank">Onramper Aggregator</a> &mdash; one widget, 30+ providers</li>
+<li><a href="https://docs.polymarket.com/polymarket-learn/get-started/how-to-deposit" target="_blank">Polymarket: How to Deposit</a></li>
+<li><a href="https://docs.polymarket.com/polymarket-learn/deposits/how-to-withdraw" target="_blank">Polymarket: How to Withdraw</a></li>
+</ul>
+</div></div>
+
+<!-- DAY 8 EXERCISES -->
+<div class="ex-gate" id="ex-8">
+<h2>Day 8 Exercises</h2><p>Complete ALL exercises to finish the Payments module.</p>
+
+<div class="ex-item" id="ex-8-1">
+<div class="ex-num">Exercise 1 of 5 &mdash; Multiple Choice</div>
+<p><strong>Why are credit card on-ramp fees (~4.5%) so much higher than bank transfer fees (~1%)?</strong></p>
+<div class="mcq-opts">
+  <div class="mcq-opt" onclick="pickMCQ(this,'8-1','a')">a) Credit cards use more electricity</div>
+  <div class="mcq-opt" onclick="pickMCQ(this,'8-1','b')">b) Credit card payments can be reversed (chargebacks) but crypto transactions cannot, so the provider charges more to cover fraud risk</div>
+  <div class="mcq-opt" onclick="pickMCQ(this,'8-1','c')">c) Banks are slower so they charge less</div>
+  <div class="mcq-opt" onclick="pickMCQ(this,'8-1','d')">d) Credit card companies donate the fees to charity</div>
+</div>
+<button class="ex-btn" onclick="checkMCQ('8-1','b','Correct! This is the fundamental tension between traditional payments and blockchain. A credit card holder can dispute a charge and get a chargeback (money returned). But the crypto has already been sent and is irreversible on the blockchain. If a fraudster buys $10,000 in USDC with a stolen card and then does a chargeback, the on-ramp provider loses $10,000. The 4.5% fee covers this fraud risk. Bank transfers (ACH/SEPA) have much lower reversal risk, hence lower fees.')">Submit Answer</button>
+<div class="ex-fb" id="fb-8-1"></div>
+</div>
+
+<div class="ex-item" id="ex-8-2">
+<div class="ex-num">Exercise 2 of 5 &mdash; Cost Comparison</div>
+<p><strong>You want to put $1,000 into a prediction market. Calculate the actual USDC you'd receive using each method:</strong><br>
+(1) MoonPay via credit card (4.5% fee)<br>
+(2) Ramp Network via bank transfer (0.49% fee)<br>
+(3) Direct USDC transfer from Coinbase (flat $2 withdrawal fee)<br>
+Which saves you the most money?</p>
+<textarea class="ex-input" id="inp-8-2" placeholder="(1) MoonPay card: $1,000 - ... = ...\n(2) Ramp bank: $1,000 - ... = ...\n(3) Coinbase direct: $1,000 - ... = ...\nBest option: ..."></textarea>
+<button class="ex-btn" onclick="checkText('8-2',30,'Let\'s check the math: (1) MoonPay card: $1,000 - $45 fee = $955 USDC received. (2) Ramp bank transfer: $1,000 - $4.90 fee = $995.10 USDC received. (3) Coinbase direct: $1,000 - $2 = $998 USDC received. The Coinbase direct transfer saves you $43 compared to the credit card option! But it requires having an existing Coinbase account with funds. The bank transfer via Ramp is only $2.90 more and doesn\'t require any exchange account. For regular traders, the difference between $955 and $998 over many deposits adds up enormously.')">Submit Answer</button>
+<div class="ex-fb" id="fb-8-2"></div>
+</div>
+
+<div class="ex-item" id="ex-8-3">
+<div class="ex-num">Exercise 3 of 5 &mdash; Architecture Design</div>
+<p><strong>You're building a prediction market app targeting users in India, US, and Europe. Design your on-ramp strategy:</strong><br>
+(1) Which provider(s) would you integrate?<br>
+(2) What payment methods for each region?<br>
+(3) How would you handle the fact that Indian users use INR, US users use USD, and European users use EUR?<br>
+(4) Would you use a single provider or an aggregator? Why?</p>
+<textarea class="ex-input" id="inp-8-3" placeholder="(1) Provider(s): ...\n(2) Payment methods per region: ...\n(3) Multi-currency handling: ...\n(4) Single vs aggregator: ..."></textarea>
+<button class="ex-btn" onclick="checkText('8-3',50,'Strong thinking! Best approach: (1) Use Onramper (aggregator) as primary &mdash; one integration covers 30+ providers across all regions. For US power users, add Coinbase Onramp separately (Apple Pay, headless API). (2) India: UPI via Transak (routed by Onramper). US: ACH/Apple Pay via Coinbase or MoonPay. Europe: SEPA Instant via Ramp Network. (3) All currencies convert to USDC at the provider level. Your smart contracts only deal with USDC. The user sees prices in their local currency but the blockchain operates in USDC. (4) Aggregator wins here &mdash; three diverse regions means you need providers with different regional strengths. Onramper auto-routes to the cheapest/best option per user\'s country and payment method.')">Submit Answer</button>
+<div class="ex-fb" id="fb-8-3"></div>
+</div>
+
+<div class="ex-item" id="ex-8-4">
+<div class="ex-num">Exercise 4 of 5 &mdash; Critical Thinking</div>
+<p><strong>Your friend says: "Why do we need on-ramp providers at all? Can't users just buy USDC on an exchange and send it directly?" Give them 3 reasons why dedicated on-ramp integration is important for a consumer-facing dApp.</strong></p>
+<textarea class="ex-input" id="inp-8-4" placeholder="Reason 1: ...\nReason 2: ...\nReason 3: ..."></textarea>
+<button class="ex-btn" onclick="checkText('8-4',40,'Great points! Key reasons: (1) USER EXPERIENCE: Most non-crypto users don\'t have exchange accounts. Asking them to sign up for Coinbase, pass KYC there, buy USDC, learn about Polygon network, and manually transfer is 10+ steps. An embedded on-ramp does it in 3 clicks inside your app. (2) DROP-OFF: Every extra step in a sign-up flow loses 20-40% of users. Going from \"click Buy\" to actually having USDC on the right chain involves account creation, KYC, navigation, network selection, and sending. Most people give up. An embedded widget reduces this to a single flow. (3) NETWORK SAFETY: Regular users WILL send USDC on the wrong network (Ethereum instead of Polygon) and permanently lose funds. Embedded on-ramps are pre-configured to deliver to the correct chain. This prevents costly user errors and support nightmares.')">Submit Answer</button>
+<div class="ex-fb" id="fb-8-4"></div>
+</div>
+
+<div class="ex-item" id="ex-8-5">
+<div class="ex-num">Exercise 5 of 5 &mdash; End-to-End Trace</div>
+<p><strong>Trace the COMPLETE payment journey: Rahul in Mumbai wants to bet 5,000 INR on "Will India win the T20 World Cup?" on a Polygon-based prediction market. Describe every step from his UPI app to receiving his winnings back in INR. Include: on-ramp provider, currency conversions, blockchain transactions, oracle resolution, and off-ramp.</strong></p>
+<textarea class="ex-input" id="inp-8-5" placeholder="Step 1: Rahul opens the prediction market app...\nStep 2: ...\n...\nFinal step: INR arrives in Rahul's bank account"></textarea>
+<button class="ex-btn" onclick="checkText('8-5',80,'Outstanding end-to-end trace! The complete flow: (1) Rahul opens the app, connects his wallet, clicks \"Buy YES\" on the India T20 market. (2) The app opens Transak\'s widget (supports UPI). Rahul enters 5,000 INR. Transak shows: 5,000 INR - 75 INR fee = ~$58.50 USDC. (3) Rahul completes KYC (first time: ID upload + selfie, 2 min). (4) Rahul pays via UPI &mdash; instant debit from his bank. (5) Transak converts INR to USDC and sends ~$58.50 USDC to Rahul\'s Polygon wallet (2-5 min). (6) The app\'s smart contract splits $58.50 into 58.5 YES + 58.5 NO tokens (CTF). (7) The CLOB sells Rahul\'s NO tokens at $0.40 each = $23.40 back. Net cost: $35.10 for 58.5 YES tokens. (8) India wins! UMA oracle confirms the result after 2 hours. (9) Rahul redeems 58.5 YES tokens for $58.50 USDC. Profit: $23.40. (10) Rahul sends $58.50 USDC to Transak off-ramp. (11) Transak converts to INR at market rate minus ~1% fee. (12) ~4,850 INR arrives in Rahul\'s bank account via IMPS/NEFT. Total round-trip cost: ~3% (on-ramp + off-ramp fees). You\'ve just traced the entire tech stack!')">Submit Answer</button>
+<div class="ex-fb" id="fb-8-5"></div>
+</div>
+</div>
+
+<div class="dnav">
+<button onclick="goDay(7)">&larr; Day 7</button>
+<button disabled id="next-8">Curriculum Complete!</button>
 </div>
 </div>
 
@@ -1284,8 +1728,8 @@ forge test --gas-report   <span class="cm"># see cost of each function</span></c
 
 <script>
 // === STATE ===
-const DAYS = 7;
-const EX_COUNTS = {1:5, 2:5, 3:5, 4:4, 5:4, 6:4, 7:4};
+const DAYS = 8;
+const EX_COUNTS = {1:5, 2:5, 3:5, 4:4, 5:4, 6:4, 7:4, 8:5};
 let state = loadState();
 
 function loadState() {
@@ -1305,7 +1749,7 @@ function goDay(n) {
     d.classList.remove('active');
     if (i === n) d.classList.add('active');
   });
-  document.getElementById('day-lbl').textContent = n === 0 ? 'Overview' : 'Day ' + n;
+  document.getElementById('day-lbl').textContent = n === 0 ? 'Overview' : (n === 8 ? 'Day 8 (Bonus)' : 'Day ' + n);
   window.scrollTo({top: 0, behavior: 'smooth'});
   if (window.innerWidth <= 860) document.getElementById('sidebar').classList.remove('visible');
 }
@@ -1399,7 +1843,7 @@ function updateProgress() {
   }
   const pct = Math.round((done / DAYS) * 100);
   document.getElementById('pfill').style.width = pct + '%';
-  document.getElementById('plbl').textContent = done + ' / ' + DAYS + ' days completed' + (done === DAYS ? ' — Congratulations!' : '');
+  document.getElementById('plbl').textContent = done + ' / ' + DAYS + ' days completed' + (done >= DAYS ? ' — Congratulations!' : '');
 }
 
 // === RESTORE STATE ON LOAD ===
